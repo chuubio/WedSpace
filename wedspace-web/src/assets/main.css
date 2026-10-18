@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-heading: 'Futura Md BT', 'Futura', 'Century Gothic', 'Trebuchet MS', sans-serif;
+
+  --color-canvas: #FFF8FA;
+  --color-blush: #FCE7EF;
+  --color-petal: #F8D7E3;
+  --color-line: #F1DCE3;
+  --color-primary: #C97895;
+  --color-rosy: #E9A8BC;
+  --color-ink: #3F3035;
+  --color-muted: #806F75;
+  --color-danger: #C0392B;
+}
+
+@layer base {
+  body {
+    @apply bg-canvas font-sans text-ink;
+  }
+}
