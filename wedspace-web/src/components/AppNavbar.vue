@@ -75,7 +75,8 @@ function kePengaturanAkun() {
             <p class="border-b border-line px-4 py-3 text-sm font-semibold">Notifikasi</p>
             <div class="px-4 py-3">
               <p class="text-sm font-medium">Selamat datang di WedSpace!</p>
-              <p class="mt-0.5 text-xs text-muted">Buat proyek baru atau jelajahi katalog dekorasi untuk memulai.</p>
+              <p v-if="auth.adalahAdmin" class="mt-0.5 text-xs text-muted">Kelola data dekorasi melalui menu Data Dekorasi.</p>
+              <p v-else class="mt-0.5 text-xs text-muted">Buat proyek baru atau jelajahi katalog dekorasi untuk memulai.</p>
             </div>
             <div class="border-t border-line px-4 py-3">
               <p class="text-xs text-muted">Belum ada notifikasi baru lainnya.</p>

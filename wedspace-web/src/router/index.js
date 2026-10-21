@@ -28,25 +28,29 @@ const router = createRouter({
     { path: '/login', name: 'login', component: LoginView, meta: publik },
     { path: '/dashboard', name: 'dashboard', component: DashboardView, meta: { ...app, butuhLogin: true } },
     { path: '/akun', name: 'pengaturan-akun', component: PengaturanAkunView, meta: { ...app, butuhLogin: true } },
-    { path: '/proyek', name: 'proyek', component: ProyekView, meta: { ...app, butuhLogin: true } },
-    { path: '/proyek/baru', name: 'proyek-baru', component: ProyekFormView, meta: { ...app, butuhLogin: true } },
-    { path: '/proyek/:id', name: 'proyek-detail', component: ProyekDetailView, meta: { ...app, butuhLogin: true } },
-    { path: '/proyek/:id/edit', name: 'proyek-edit', component: ProyekFormView, meta: { ...app, butuhLogin: true } },
-    { path: '/katalog', name: 'katalog', component: KatalogView, meta: { ...app, butuhLogin: true } },
-    { path: '/rancangan/:id/editor', name: 'editor', component: EditorView, meta: { ...blank, butuhLogin: true } },
-    { path: '/rancangan/:id/estimasi', name: 'estimasi', component: EstimasiView, meta: { ...app, butuhLogin: true } },
-    { path: '/rancangan/:id/3d', name: 'visualisasi-3d', component: Visualisasi3DView, meta: { ...blank, butuhLogin: true } },
+    { path: '/proyek', name: 'proyek', component: ProyekView, meta: { ...app, butuhLogin: true, hanyaWO: true } },
+    { path: '/proyek/baru', name: 'proyek-baru', component: ProyekFormView, meta: { ...app, butuhLogin: true, hanyaWO: true } },
+    { path: '/proyek/:id', name: 'proyek-detail', component: ProyekDetailView, meta: { ...app, butuhLogin: true, hanyaWO: true } },
+    { path: '/proyek/:id/edit', name: 'proyek-edit', component: ProyekFormView, meta: { ...app, butuhLogin: true, hanyaWO: true } },
+    { path: '/katalog', name: 'katalog', component: KatalogView, meta: { ...app, butuhLogin: true, hanyaWO: true } },
+    { path: '/rancangan/:id/editor', name: 'editor', component: EditorView, meta: { ...blank, butuhLogin: true, hanyaWO: true } },
+    { path: '/rancangan/:id/estimasi', name: 'estimasi', component: EstimasiView, meta: { ...app, butuhLogin: true, hanyaWO: true } },
+    { path: '/rancangan/:id/3d', name: 'visualisasi-3d', component: Visualisasi3DView, meta: { ...blank, butuhLogin: true, hanyaWO: true } },
     { path: '/admin/dekorasi', name: 'admin-dekorasi', component: AdminDekorasiView, meta: { ...app, butuhLogin: true, adminSaja: true } },
   ],
 })
 
-// Navigation guard: route butuhLogin dilempar ke /login, route admin dilempar ke /dashboard (FR-AUTH1, FR-AUTH2)
+// Navigation guard: route butuhLogin dilempar ke /login, route admin <-> WO dipisah (FR-AUTH1, FR-AUTH2)
 router.beforeEach((to) => {
   const auth = useAuthStore()
   if (to.meta.butuhLogin && !auth.sudahLogin) {
     return { path: '/login', query: { dari: to.fullPath } }
   }
   if (to.meta.adminSaja && !auth.adalahAdmin) {
+    return { path: '/dashboard' }
+  }
+  // Admin tidak memakai halaman WO (proyek, katalog, editor) -> dialihkan ke dashboard admin
+  if (to.meta.hanyaWO && auth.adalahAdmin) {
     return { path: '/dashboard' }
   }
   if (to.path === '/login' && auth.sudahLogin) {

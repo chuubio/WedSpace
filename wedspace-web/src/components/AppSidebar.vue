@@ -19,7 +19,9 @@ const menuUtama = [
   { nama: 'Katalog Dekorasi', ke: '/katalog', ikon: 'fa-images' },
 ]
 
+// Admin tidak memakai menu WO (proyek & katalog) — hanya dashboard dan kelola data dekorasi
 const menuAdmin = [
+  { nama: 'Dashboard', ke: '/dashboard', ikon: 'fa-gauge' },
   { nama: 'Data Dekorasi', ke: '/admin/dekorasi', ikon: 'fa-box-archive' },
 ]
 
@@ -48,22 +50,24 @@ function konfirmasiLogout() {
     ]"
   >
     <nav class="flex-1 space-y-1 overflow-y-auto p-3.5 pt-20 md:pt-3.5">
-      <p class="px-3.5 pb-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted">Menu Utama</p>
-      <RouterLink
-        v-for="m in menuUtama"
-        :key="m.ke"
-        :to="m.ke"
-        class="flex items-center gap-3 rounded-[10px] px-3.5 py-2.5 text-muted"
-        active-class="bg-blush font-semibold text-ink"
-        @click="$emit('tutup')"
-      >
-        <i :class="['fa-solid w-4 text-center', m.ikon]"></i>{{ m.nama }}
-      </RouterLink>
-
       <template v-if="auth.adalahAdmin">
-        <p class="px-3.5 pb-1.5 pt-4 text-[11px] font-semibold uppercase tracking-wider text-muted">Admin</p>
+        <p class="px-3.5 pb-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted">Menu Admin</p>
         <RouterLink
           v-for="m in menuAdmin"
+          :key="m.ke"
+          :to="m.ke"
+          class="flex items-center gap-3 rounded-[10px] px-3.5 py-2.5 text-muted"
+          active-class="bg-blush font-semibold text-ink"
+          @click="$emit('tutup')"
+        >
+          <i :class="['fa-solid w-4 text-center', m.ikon]"></i>{{ m.nama }}
+        </RouterLink>
+      </template>
+
+      <template v-else>
+        <p class="px-3.5 pb-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted">Menu Utama</p>
+        <RouterLink
+          v-for="m in menuUtama"
           :key="m.ke"
           :to="m.ke"
           class="flex items-center gap-3 rounded-[10px] px-3.5 py-2.5 text-muted"

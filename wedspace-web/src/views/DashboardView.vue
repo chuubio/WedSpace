@@ -1,23 +1,39 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import StatCard from '../components/StatCard.vue'
 
 const auth = useAuthStore()
 const API = 'http://localhost:3000/api'
 
+const adalahAdmin = computed(() => auth.adalahAdmin)
+
 const ringkasan = ref({ total_proyek: 0, rancangan_tersimpan: 0, dekorasi_tersedia: 0 })
+const dataDekorasi = ref([])
 const sibuk = ref(false)
 const error = ref('')
+
+const totalDekorasi = computed(() => dataDekorasi.value.length)
+const dekorasiAktif = computed(() => dataDekorasi.value.filter((d) => d.is_active).length)
+const dekorasiNonaktif = computed(() => totalDekorasi.value - dekorasiAktif.value)
+const totalKategori = computed(() => new Set(dataDekorasi.value.map((d) => d.kategori)).size)
 
 async function muat() {
   sibuk.value = true
   error.value = ''
   try {
-    const res = await fetch(`${API}/dashboard`, { headers: auth.authHeader() })
-    const data = await res.json()
-    if (!res.ok) throw new Error(data.pesan || 'Gagal memuat dashboard.')
-    ringkasan.value = data.data
+    if (adalahAdmin.value) {
+      // Dashboard admin hanya berisi ringkasan data dekorasi
+      const res = await fetch(`${API}/dekorasi`, { headers: auth.authHeader() })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.pesan || 'Gagal memuat data dekorasi.')
+      dataDekorasi.value = data.data
+    } else {
+      const res = await fetch(`${API}/dashboard`, { headers: auth.authHeader() })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.pesan || 'Gagal memuat dashboard.')
+      ringkasan.value = data.data
+    }
   } catch (err) {
     error.value = err.message
   } finally {
@@ -29,7 +45,43 @@ onMounted(muat)
 </script>
 
 <template>
-  <section>
+  <!-- Dashboard admin: khusus pengelolaan data dekorasi, tanpa proyek & katalog WO -->
+  <section v-if="adalahAdmin">
+    <h1 class="font-heading text-4xl font-semibold md:text-5xl">Dashboard Admin</h1>
+    <p class="mt-2 text-base text-muted">Ringkasan data dekorasi WedSpace.</p>
+
+    <p v-if="error" class="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-danger">{{ error }}</p>
+
+    <div v-if="sibuk && !totalDekorasi" class="mt-6 text-muted">Memuat data…</div>
+
+    <div v-else class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <StatCard judul="Total Dekorasi" :nilai="totalDekorasi" ikon="fa-box-archive" />
+      <StatCard judul="Dekorasi Aktif" :nilai="dekorasiAktif" ikon="fa-circle-check" />
+      <StatCard judul="Dekorasi Nonaktif" :nilai="dekorasiNonaktif" ikon="fa-circle-pause" />
+    </div>
+
+    <RouterLink
+      to="/admin/dekorasi"
+      class="mt-6 flex items-center justify-between gap-4 rounded-2xl border border-line bg-white p-5 hover:border-primary"
+    >
+      <span class="flex items-center gap-4">
+        <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-blush text-primary">
+          <i class="fa-solid fa-box-archive"></i>
+        </span>
+        <span>
+          <span class="block font-semibold">Kelola Data Dekorasi</span>
+          <span class="block text-sm text-muted">
+            Tambah, ubah, dan hapus data dekorasi beserta harga dan ukurannya.
+            <template v-if="totalKategori"> Terdapat {{ totalKategori }} kategori.</template>
+          </span>
+        </span>
+      </span>
+      <i class="fa-solid fa-arrow-right text-muted"></i>
+    </RouterLink>
+  </section>
+
+  <!-- Dashboard WO: ringkasan proyek & rancangan -->
+  <section v-else>
     <h1 class="font-heading text-4xl font-semibold md:text-5xl">Halo, {{ auth.user?.nama || 'perencana' }}</h1>
     <p class="mt-2 text-base text-muted">Berikut ringkasan workspace-mu.</p>
 
