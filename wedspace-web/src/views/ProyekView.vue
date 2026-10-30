@@ -1,10 +1,12 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
+import { useSubscriptionStore } from '../stores/subscription'
 import ProjectCard from '../components/ProjectCard.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
 
 const auth = useAuthStore()
+const sub = useSubscriptionStore()
 const API = 'http://localhost:3000/api'
 
 const daftar = ref([])
@@ -22,6 +24,14 @@ const tampil = computed(() => {
     (p.nama_venue || '').toLowerCase().includes(k) ||
     (p.tema || '').toLowerCase().includes(k),
   )
+})
+
+// Info batas paket (frontend hanya menampilkan; penegakan tetap di backend)
+const batasInfo = computed(() => {
+  if (sub.adalahAdmin) return 'Admin: proyek tanpa batas paket.'
+  if (sub.maksProyek === null) return `Paket ${sub.namaPaket}: proyek tanpa batas.`
+  const dasar = `Paket ${sub.namaPaket}: ${sub.proyekAktif}/${sub.maksProyek} proyek aktif`
+  return sub.proyekPenuh ? `${dasar} - batas paket tercapai.` : `${dasar}.`
 })
 
 async function muat() {
@@ -58,7 +68,10 @@ async function hapus() {
   }
 }
 
-onMounted(muat)
+onMounted(() => {
+  muat()
+  sub.muat().catch(() => {})
+})
 </script>
 
 <template>
@@ -68,8 +81,20 @@ onMounted(muat)
         <h1 class="font-heading text-4xl font-semibold">Proyek Saya</h1>
         <p class="mt-1 text-sm text-muted">Kelola seluruh proyek venue pernikahanmu.</p>
       </div>
-      <RouterLink to="/proyek/baru" class="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90">
+      <RouterLink v-if="!sub.proyekPenuh" to="/proyek/baru" class="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90">
         <i class="fa-solid fa-plus mr-2"></i>Proyek Baru
+      </RouterLink>
+      <RouterLink v-else to="/langganan" class="rounded-xl border border-line bg-white px-5 py-2.5 text-sm font-semibold hover:bg-canvas">
+        <i class="fa-solid fa-crown mr-2 text-primary"></i>Upgrade ke Premium
+      </RouterLink>
+    </div>
+
+    <div v-if="sub.ringkasan" class="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-line bg-white px-4 py-3 text-sm">
+      <span :class="['text-muted', sub.proyekPenuh ? '!text-danger' : '']">
+        <i class="fa-solid fa-crown mr-1.5 text-primary"></i>{{ batasInfo }}
+      </span>
+      <RouterLink v-if="!sub.adalahAdmin && !sub.adalahPremium" to="/langganan" class="font-semibold text-primary">
+        Lihat paket
       </RouterLink>
     </div>
 

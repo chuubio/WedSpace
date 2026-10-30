@@ -1,12 +1,22 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
+import { useSubscriptionStore } from '../stores/subscription'
 import StatCard from '../components/StatCard.vue'
 
 const auth = useAuthStore()
+const sub = useSubscriptionStore()
 const API = 'http://localhost:3000/api'
 
 const adalahAdmin = computed(() => auth.adalahAdmin)
+
+const infoPaket = computed(() => {
+  if (sub.adalahAdmin) return 'Tanpa batasan paket Free/Premium.'
+  if (sub.maksProyek === null) {
+    return `Proyek tanpa batas paket | AI ${sub.batas.kuota_rekomendasi_per_minggu ?? '-'}/minggu/proyek`
+  }
+  return `${sub.proyekAktif}/${sub.maksProyek} proyek aktif | AI ${sub.batas.kuota_rekomendasi_per_minggu}/minggu/proyek`
+})
 
 const ringkasan = ref({ total_proyek: 0, rancangan_tersimpan: 0, dekorasi_tersedia: 0 })
 const dataDekorasi = ref([])
@@ -41,7 +51,11 @@ async function muat() {
   }
 }
 
-onMounted(muat)
+onMounted(() => {
+  muat()
+  // Informasi paket langganan (tidak memblokir dashboard bila gagal)
+  sub.muat().catch(() => {})
+})
 </script>
 
 <template>
@@ -107,5 +121,26 @@ onMounted(muat)
         <p class="text-sm text-muted">Lihat dekorasi yang tersedia beserta harganya.</p>
       </RouterLink>
     </div>
+
+    <!-- Status paket langganan WO -->
+    <RouterLink
+      to="/langganan"
+      v-if="sub.ringkasan"
+      class="mt-4 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-line bg-white p-5 hover:border-primary"
+    >
+      <span class="flex items-center gap-4">
+        <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-blush text-primary">
+          <i class="fa-solid fa-crown"></i>
+        </span>
+        <span>
+          <span class="block font-semibold">Paket {{ sub.namaPaket }}</span>
+          <span class="block text-sm text-muted">{{ infoPaket }}</span>
+        </span>
+      </span>
+      <span class="text-sm font-semibold text-primary">
+        {{ sub.adalahPremium ? 'Lihat detail' : 'Upgrade ke Premium' }}
+        <i class="fa-solid fa-arrow-right ml-1"></i>
+      </span>
+    </RouterLink>
   </section>
 </template>

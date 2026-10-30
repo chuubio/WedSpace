@@ -9,7 +9,6 @@ const { authWajib, adminSaja } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Folder upload: wedspace-api/uploads/{gambar,model}
 const dirGambar = path.join(__dirname, '..', '..', 'uploads', 'gambar');
 const dirModel = path.join(__dirname, '..', '..', 'uploads', 'model');
 for (const dir of [dirGambar, dirModel]) fs.mkdirSync(dir, { recursive: true });
@@ -59,7 +58,6 @@ const skemaDekorasi = z.object({
   is_active: z.coerce.boolean().optional().default(true),
 });
 
-// GET /api/dekorasi?q=&kategori= — WO hanya yang aktif, admin semua (FR-A3, FR-WO7)
 router.get('/', authWajib, async (req, res) => {
   const { q, kategori } = req.query;
   const where = {};
@@ -70,7 +68,6 @@ router.get('/', authWajib, async (req, res) => {
   return res.json({ data });
 });
 
-// GET /api/dekorasi/:id — detail (FR-WO8)
 router.get('/:id', authWajib, async (req, res) => {
   const item = await Decoration.findByPk(req.params.id);
   if (!item) return res.status(404).json({ pesan: 'Dekorasi tidak ditemukan.' });
@@ -80,7 +77,6 @@ router.get('/:id', authWajib, async (req, res) => {
   return res.json({ data: item });
 });
 
-// POST /api/dekorasi — tambah (multipart: gambar + model_3d) (FR-A3)
 router.post('/', authWajib, adminSaja, (req, res, next) => {
   uploadDuaFile(req, res, (err) => {
     if (err) {
@@ -105,7 +101,6 @@ router.post('/', authWajib, adminSaja, (req, res, next) => {
   return res.status(201).json({ data: dibuat });
 });
 
-// PUT /api/dekorasi/:id — ubah (FR-A4)
 router.put('/:id', authWajib, adminSaja, async (req, res) => {
   const item = await Decoration.findByPk(req.params.id);
   if (!item) return res.status(404).json({ pesan: 'Dekorasi tidak ditemukan.' });
@@ -117,7 +112,6 @@ router.put('/:id', authWajib, adminSaja, async (req, res) => {
   return res.json({ data: item });
 });
 
-// DELETE /api/dekorasi/:id — hapus; bila dipakai di rancangan, dinonaktifkan (FR-A5, UC-20)
 router.delete('/:id', authWajib, adminSaja, async (req, res) => {
   const item = await Decoration.findByPk(req.params.id);
   if (!item) return res.status(404).json({ pesan: 'Dekorasi tidak ditemukan.' });

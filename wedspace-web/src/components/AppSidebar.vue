@@ -17,6 +17,7 @@ const menuUtama = [
   { nama: 'Dashboard', ke: '/dashboard', ikon: 'fa-gauge' },
   { nama: 'Proyek Saya', ke: '/proyek', ikon: 'fa-folder-open' },
   { nama: 'Katalog Dekorasi', ke: '/katalog', ikon: 'fa-images' },
+  { nama: 'Langganan', ke: '/langganan', ikon: 'fa-crown' },
 ]
 
 // Admin tidak memakai menu WO (proyek & katalog) — hanya dashboard dan kelola data dekorasi

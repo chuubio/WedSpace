@@ -4,7 +4,6 @@ const { authWajib } = require('../middleware/auth');
 
 const router = express.Router();
 
-// GET /api/dashboard — ringkasan WO: total proyek, rancangan tersimpan, dekorasi tersedia (FR-WO4, FR-WO7)
 router.get('/', authWajib, async (req, res) => {
   const whereProyek = req.user.role === 'admin' ? {} : { user_id: req.user.id };
   const proyek = await Project.findAll({ where: whereProyek, attributes: ['id'], include: [{ model: Design, attributes: ['id'] }] });

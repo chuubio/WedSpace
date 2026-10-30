@@ -8,6 +8,8 @@ const dekorasiRoutes = require('./routes/dekorasi');
 const proyekRoutes = require('./routes/proyek');
 const rancanganRoutes = require('./routes/rancangan');
 const dashboardRoutes = require('./routes/dashboard');
+const subscriptionRoutes = require('./routes/subscription');
+const rekomendasiRoutes = require('./routes/rekomendasi');
 
 const app = express();
 app.use(cors({ origin: 'http://localhost:5173' }));
@@ -22,6 +24,8 @@ app.use('/api/dekorasi', dekorasiRoutes);
 app.use('/api/proyek', proyekRoutes);
 app.use('/api/rancangan', rancanganRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/subscription', subscriptionRoutes);
+app.use('/api/rekomendasi', rekomendasiRoutes);
 
 const PORT = process.env.PORT || 3000;
 

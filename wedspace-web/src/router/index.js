@@ -11,6 +11,7 @@ import Visualisasi3DView from '../views/Visualisasi3DView.vue'
 import EstimasiView from '../views/EstimasiView.vue'
 import AdminDekorasiView from '../views/AdminDekorasiView.vue'
 import PengaturanAkunView from '../views/PengaturanAkunView.vue'
+import LanggananView from '../views/LanggananView.vue'
 import { useAuthStore } from '../stores/auth'
 
 const publik = { layout: 'public' }
@@ -28,6 +29,7 @@ const router = createRouter({
     { path: '/login', name: 'login', component: LoginView, meta: publik },
     { path: '/dashboard', name: 'dashboard', component: DashboardView, meta: { ...app, butuhLogin: true } },
     { path: '/akun', name: 'pengaturan-akun', component: PengaturanAkunView, meta: { ...app, butuhLogin: true } },
+    { path: '/langganan', name: 'langganan', component: LanggananView, meta: { ...app, butuhLogin: true } },
     { path: '/proyek', name: 'proyek', component: ProyekView, meta: { ...app, butuhLogin: true, hanyaWO: true } },
     { path: '/proyek/baru', name: 'proyek-baru', component: ProyekFormView, meta: { ...app, butuhLogin: true, hanyaWO: true } },
     { path: '/proyek/:id', name: 'proyek-detail', component: ProyekDetailView, meta: { ...app, butuhLogin: true, hanyaWO: true } },
@@ -40,7 +42,6 @@ const router = createRouter({
   ],
 })
 
-// Navigation guard: route butuhLogin dilempar ke /login, route admin <-> WO dipisah (FR-AUTH1, FR-AUTH2)
 router.beforeEach((to) => {
   const auth = useAuthStore()
   if (to.meta.butuhLogin && !auth.sudahLogin) {
@@ -49,7 +50,6 @@ router.beforeEach((to) => {
   if (to.meta.adminSaja && !auth.adalahAdmin) {
     return { path: '/dashboard' }
   }
-  // Admin tidak memakai halaman WO (proyek, katalog, editor) -> dialihkan ke dashboard admin
   if (to.meta.hanyaWO && auth.adalahAdmin) {
     return { path: '/dashboard' }
   }

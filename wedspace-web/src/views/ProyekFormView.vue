@@ -2,17 +2,24 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import { useSubscriptionStore } from '../stores/subscription'
 import ProjectForm from '../components/ProjectForm.vue'
 
 const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
+const sub = useSubscriptionStore()
 const API = 'http://localhost:3000/api'
 
 const modeEdit = computed(() => !!route.params.id)
 const awal = ref({})
 const sibuk = ref(false)
 const error = ref('')
+
+// Paket langganan: bila Free sudah mencapai 2 proyek aktif, pembuatan proyek
+// baru harus diblokir (kecuali admin/premium). Penegakan di backend tetap
+// dilakukan oleh POST /api/proyek.
+const dilarangMembuat = computed(() => !modeEdit.value && sub.proyekPenuh && !sub.adalahAdmin && !sub.adalahPremium)
 
 async function muatLama() {
   if (!modeEdit.value) return
@@ -49,7 +56,10 @@ async function simpan(payload) {
   }
 }
 
-onMounted(muatLama)
+onMounted(() => {
+  muatLama()
+  sub.muat().catch(() => {})
+})
 </script>
 
 <template>
@@ -58,8 +68,13 @@ onMounted(muatLama)
     <p class="mt-1 text-sm text-muted">
       {{ modeEdit ? 'Perbarui informasi proyek venue.' : 'Isi detail proyek — Rancangan 1 otomatis dibuat untukmu.' }}
     </p>
+
+    <p v-if="!modeEdit && dilarangMembuat" class="mt-4 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-700">
+      Anda telah mencapai batas {{ sub.maksProyek }} proyek aktif pada paket Free. Upgrade ke Premium untuk membuat lebih banyak proyek.
+    </p>
+
     <div class="mt-5">
-      <ProjectForm :awal="awal" :sibuk="sibuk" :error="error" @simpan="simpan" @batal="router.back()" />
+      <ProjectForm :awal="awal" :sibuk="sibuk" :error="error" :dilarang="dilarangMembuat" @simpan="simpan" @batal="router.back()" />
     </div>
   </section>
 </template>

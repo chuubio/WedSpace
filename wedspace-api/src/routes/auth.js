@@ -10,7 +10,6 @@ const { authWajib } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Folder upload foto profil: wedspace-api/uploads/profil
 const dirProfil = path.join(__dirname, '..', '..', 'uploads', 'profil');
 fs.mkdirSync(dirProfil, { recursive: true });
 
@@ -48,7 +47,6 @@ function userPublik(user) {
   };
 }
 
-// POST /api/auth/login — FR-AUTH1, UC-01
 router.post('/login', async (req, res) => {
   const parsed = skemaLogin.safeParse(req.body);
   if (!parsed.success) {
@@ -74,7 +72,6 @@ router.post('/login', async (req, res) => {
   return res.json({ token, user: userPublik(user) });
 });
 
-// GET /api/auth/me — profil user dari token
 router.get('/me', authWajib, async (req, res) => {
   const user = await User.findByPk(req.user.id, {
     attributes: ['id', 'nama', 'username_email', 'role', 'foto_profil'],
@@ -85,7 +82,6 @@ router.get('/me', authWajib, async (req, res) => {
   return res.json({ user: userPublik(user) });
 });
 
-// PUT /api/auth/profil — ubah nama + foto profil (multipart: foto_profil)
 router.put('/profil', authWajib, (req, res, next) => {
   uploadFoto(req, res, (err) => {
     if (err) {

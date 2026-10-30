@@ -2,11 +2,14 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import { useSubscriptionStore } from '../stores/subscription'
 import ConfirmModal from '../components/ConfirmModal.vue'
+import RecommendationPanel from '../components/RecommendationPanel.vue'
 
 const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
+const sub = useSubscriptionStore()
 const API = 'http://localhost:3000/api'
 
 const proyek = ref(null)
@@ -15,6 +18,8 @@ const error = ref('')
 const namaBaru = ref('')
 const menambah = ref(false)
 const targetHapus = ref(false)
+const pesanEkspor = ref('')
+const mengekspor = ref(null)
 
 function rupiah(n) {
   return 'Rp' + Number(n || 0).toLocaleString('id-ID')
@@ -61,6 +66,32 @@ async function tambahRancangan() {
   }
 }
 
+// Ekspor rancangan ke PDF (fitur Premium). Backend menolak paket Free dengan 403.
+async function eksporPdf(rancangan) {
+  pesanEkspor.value = ''
+  mengekspor.value = rancangan.id
+  try {
+    const res = await fetch(`${API}/rancangan/${rancangan.id}/ekspor`, { headers: auth.authHeader() })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      throw new Error(data.pesan || 'Gagal mengekspor PDF.')
+    }
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    const tautan = document.createElement('a')
+    tautan.href = url
+    tautan.download = `${String(rancangan.nama_rancangan || 'rancangan').replace(/[^a-z0-9-_]+/gi, '-').toLowerCase()}.pdf`
+    document.body.appendChild(tautan)
+    tautan.click()
+    tautan.remove()
+    URL.revokeObjectURL(url)
+  } catch (err) {
+    pesanEkspor.value = err.message
+  } finally {
+    mengekspor.value = null
+  }
+}
+
 async function hapusProyek() {
   try {
     const res = await fetch(`${API}/proyek/${route.params.id}`, {
@@ -76,7 +107,11 @@ async function hapusProyek() {
   }
 }
 
-onMounted(muat)
+onMounted(() => {
+  muat()
+  // Status paket langganan (free/premium) untuk menentukan fitur yang tersedia.
+  sub.muat().catch(() => {})
+})
 </script>
 
 <template>
@@ -119,7 +154,28 @@ onMounted(muat)
           v-for="r in proyek.rancangan" :key="r.id"
           class="rounded-2xl border border-line bg-white p-5 shadow-[0_4px_18px_rgba(201,120,149,0.1)]"
         >
-          <h3 class="font-semibold">{{ r.nama_rancangan }}</h3>
+          <div class="flex items-start justify-between gap-2">
+            <h3 class="font-semibold">{{ r.nama_rancangan }}</h3>
+            <button
+              v-if="sub.bisaEksporPdf"
+              class="rounded-lg p-1 text-muted hover:bg-canvas hover:text-primary disabled:opacity-50"
+              :disabled="mengekspor === r.id"
+              title="Ekspor rancangan ke PDF (Premium)"
+              aria-label="Ekspor rancangan ke PDF"
+              @click="eksporPdf(r)"
+            >
+              <i :class="['fa-solid', mengekspor === r.id ? 'fa-spinner fa-spin' : 'fa-file-pdf']"></i>
+            </button>
+            <button
+              v-else
+              class="cursor-not-allowed rounded-lg p-1 text-muted/40"
+              disabled
+              title="Ekspor rancangan ke PDF hanya tersedia pada paket Premium."
+              aria-label="Ekspor rancangan ke PDF (Paket Free)"
+            >
+              <i class="fa-solid fa-file-pdf"></i>
+            </button>
+          </div>
           <p class="mt-0.5 text-xs text-muted">{{ r.jumlah_item }} item • diubah {{ tanggal(r.updatedAt) }}</p>
           <div class="mt-4 grid grid-cols-3 gap-2">
             <RouterLink :to="`/rancangan/${r.id}/editor`" class="rounded-xl bg-primary py-2 text-center text-sm font-semibold text-white hover:opacity-90">
@@ -132,6 +188,10 @@ onMounted(muat)
               3D
             </RouterLink>
           </div>
+          <p v-if="!sub.bisaEksporPdf" class="mt-2 text-xs text-muted">
+            Ekspor PDF hanya tersedia pada paket Premium.
+            <RouterLink to="/langganan" class="font-semibold text-primary">Upgrade ke Premium</RouterLink>
+          </p>
         </article>
       </div>
       <p v-else class="mt-3 text-sm text-muted">Belum ada rancangan.</p>
@@ -145,7 +205,14 @@ onMounted(muat)
           {{ menambah ? 'Menambah…' : 'Rancangan Baru' }}
         </button>
       </form>
+
+      <RecommendationPanel v-if="proyek" :project-id="proyek.id" />
     </template>
+
+    <p v-if="pesanEkspor" class="mt-4 flex flex-wrap items-center gap-2 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-700">
+      {{ pesanEkspor }}
+      <RouterLink to="/langganan" class="font-semibold underline">Lihat paket</RouterLink>
+    </p>
 
     <ConfirmModal
       :tampil="targetHapus"

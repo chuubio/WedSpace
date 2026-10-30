@@ -126,12 +126,10 @@ async function seed() {
   try {
     await sequelize.authenticate();
 
-    // Membuat tabel yang belum tersedia tanpa menghapus tabel lama.
     await sequelize.sync();
 
     const hash = await bcrypt.hash('password123', 10);
 
-    // Membuat akun admin jika belum tersedia.
     const [admin] = await User.findOrCreate({
       where: {
         username_email: 'admin@wedspace.test',
@@ -144,7 +142,6 @@ async function seed() {
       },
     });
 
-    // Membuat akun WO jika belum tersedia.
     const [wo] = await User.findOrCreate({
       where: {
         username_email: 'wo@wedspace.test',
@@ -157,7 +154,6 @@ async function seed() {
       },
     });
 
-    // Menambahkan dekorasi yang belum tersedia.
     const dekorasiByName = new Map();
 
     for (const data of dataDekorasi) {
@@ -171,7 +167,6 @@ async function seed() {
       dekorasiByName.set(dekorasi.nama_dekorasi, dekorasi);
     }
 
-    // Membuat proyek contoh jika belum tersedia.
     const [proyek] = await Project.findOrCreate({
       where: {
         user_id: wo.id,
@@ -189,7 +184,6 @@ async function seed() {
       },
     });
 
-    // Membuat rancangan contoh jika belum tersedia.
     const [rancangan] = await Design.findOrCreate({
       where: {
         project_id: proyek.id,
@@ -225,8 +219,6 @@ async function seed() {
       },
     ];
 
-    // Menambahkan item contoh hanya jika dekorasinya belum
-    // tercatat pada rancangan contoh tersebut.
     for (const item of itemContoh) {
       const dekorasi = dekorasiByName.get(item.nama);
 

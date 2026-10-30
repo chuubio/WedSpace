@@ -43,8 +43,31 @@ const DesignItem = sequelize.define('DesignItem', {
   jumlah: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 },
 }, { tableName: 'design_items', underscored: true });
 
+const Subscription = sequelize.define('Subscription', {
+  plan: { type: DataTypes.ENUM('free', 'premium'), allowNull: false, defaultValue: 'free' },
+  status: { type: DataTypes.ENUM('active', 'expired', 'cancelled'), allowNull: false, defaultValue: 'active' },
+  started_at: { type: DataTypes.DATE, allowNull: true },
+  expires_at: { type: DataTypes.DATE, allowNull: true },
+}, { tableName: 'subscriptions', underscored: true });
+
+const RecommendationUsage = sequelize.define('RecommendationUsage', {
+  plan: { type: DataTypes.STRING, allowNull: true },
+  dipakai_pada: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
+  request_data: { type: DataTypes.JSON, allowNull: true },
+  result_data: { type: DataTypes.JSON, allowNull: true },
+}, { tableName: 'recommendation_usages', underscored: true });
+
 User.hasMany(Project, { foreignKey: { name: 'user_id', allowNull: false }, onDelete: 'CASCADE' });
 Project.belongsTo(User, { foreignKey: 'user_id' });
+
+User.hasOne(Subscription, { foreignKey: { name: 'user_id', allowNull: false }, onDelete: 'CASCADE' });
+Subscription.belongsTo(User, { foreignKey: 'user_id' });
+
+User.hasMany(RecommendationUsage, { foreignKey: { name: 'user_id', allowNull: false }, onDelete: 'CASCADE' });
+RecommendationUsage.belongsTo(User, { foreignKey: 'user_id' });
+
+Project.hasMany(RecommendationUsage, { foreignKey: { name: 'project_id', allowNull: false }, onDelete: 'CASCADE' });
+RecommendationUsage.belongsTo(Project, { foreignKey: 'project_id' });
 
 Project.hasMany(Design, { foreignKey: { name: 'project_id', allowNull: false }, onDelete: 'CASCADE' });
 Design.belongsTo(Project, { foreignKey: 'project_id' });
@@ -55,4 +78,13 @@ DesignItem.belongsTo(Design, { foreignKey: 'design_id' });
 Decoration.hasMany(DesignItem, { foreignKey: { name: 'decoration_id', allowNull: false }, onDelete: 'RESTRICT' });
 DesignItem.belongsTo(Decoration, { foreignKey: 'decoration_id' });
 
-module.exports = { sequelize, User, Project, Design, Decoration, DesignItem };
+module.exports = {
+  sequelize,
+  User,
+  Project,
+  Design,
+  Decoration,
+  DesignItem,
+  Subscription,
+  RecommendationUsage,
+};

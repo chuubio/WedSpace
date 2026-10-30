@@ -5,6 +5,7 @@ const props = defineProps({
   awal: { type: Object, default: () => ({}) },
   sibuk: { type: Boolean, default: false },
   error: { type: String, default: '' },
+  dilarang: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['simpan', 'batal'])
@@ -19,6 +20,11 @@ const form = ref({
   anggaran: '',
 })
 
+function kirim() {
+  if (props.dilarang) return
+  emit('simpan', { ...form.value })
+}
+
 watch(() => props.awal, (v) => {
   form.value = {
     nama_proyek: v.nama_proyek || '',
@@ -32,10 +38,6 @@ watch(() => props.awal, (v) => {
 }, { immediate: true })
 
 const medan = 'w-full rounded-xl border border-line bg-canvas px-4 py-2.5 outline-none focus:border-primary'
-
-function kirim() {
-  emit('simpan', { ...form.value })
-}
 </script>
 
 <template>
@@ -77,7 +79,7 @@ function kirim() {
       <button type="button" class="flex-1 rounded-xl border border-line py-2.5 font-semibold hover:bg-canvas" @click="$emit('batal')">
         Batal
       </button>
-      <button type="submit" :disabled="sibuk" class="flex-1 rounded-xl bg-primary py-2.5 font-semibold text-white hover:opacity-90 disabled:opacity-60">
+      <button type="submit" :disabled="sibuk || dilarang" class="flex-1 rounded-xl bg-primary py-2.5 font-semibold text-white hover:opacity-90 disabled:opacity-60">
         {{ sibuk ? 'Menyimpan…' : 'Simpan Proyek' }}
       </button>
     </div>

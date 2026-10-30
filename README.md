@@ -157,6 +157,66 @@ untuk menguji fitur login WedSpace.
   mengubah password akun tersebut.
 - Jangan gunakan kredensial pengujian ini untuk produksi.
 
+## Paket Langganan (Free & Premium)
+
+WedSpace memiliki paket penggunaan **Free** dan **Premium**, yang terpisah dari
+kolom `role` pada tabel `users`.
+
+- `role` (`wo` / `admin`) menentukan jenis pengguna.
+- `subscription` (`free` / `premium`) menentukan paket penggunaan fitur.
+
+### Paket Free
+
+- Maksimal 2 proyek aktif.
+- Layout 2D, visualisasi 3D, estimasi biaya, dan katalog dekorasi tetap tersedia.
+- AI rekomendasi dekorasi: maksimal 3 rekomendasi per minggu untuk setiap proyek.
+- Ekspor rancangan ke PDF belum tersedia.
+
+### Paket Premium
+
+- Proyek aktif tidak dibatasi.
+- Layout 2D, visualisasi 3D, estimasi biaya, dan katalog dekorasi tersedia.
+- AI rekomendasi dekorasi: 30 rekomendasi per minggu untuk setiap proyek.
+- Ekspor rancangan ke PDF tersedia.
+
+### Konfigurasi
+
+Semua batas paket dikumpulkan di `wedspace-api/src/config/subscription.js`
+dan dapat diubah melalui variabel environment (`.env`):
+
+- `FREE_MAX_ACTIVE_PROJECTS` (default `2`)
+- `FREE_AI_RECOMMENDATIONS_PER_WEEK` (default `3`)
+- `PREMIUM_MAX_ACTIVE_PROJECTS` (default kosong = tanpa batas)
+- `PREMIUM_AI_RECOMMENDATIONS_PER_WEEK` (default `30`)
+- `PREMIUM_DURATION_DAYS` (default `30` untuk simulasi upgrade)
+
+### Endpoint API Subscription
+
+- `GET /api/subscription/me` — status paket user yang sedang login.
+  Respons inti: `{ "plan": "free" | "premium" | "admin", "status": "active" | "expired" | "cancelled", "expires_at": "..." }`.
+
+- `POST /api/subscription/activate` — **DEVELOPMENT / TESTING ONLY**.
+  Simulasi aktivasi paket Premium tanpa payment gateway. Mengaktifkan Premium
+  selama `hari` hari (default dari `PREMIUM_DURATION_DAYS`).
+
+- `POST /api/subscription/reset` — **DEVELOPMENT / TESTING ONLY**.
+  Simulasi pembatalan paket Premium dan kembali ke paket Free.
+
+### Pembatasan Proyek Free
+
+Pembuatan proyek baru (`POST /api/proyek`) dilakukan pengecekan batas di backend:
+
+- Admin tidak dibatasi.
+- Premium tidak dibatasi.
+- Free dibatasi maksimal 2 proyek aktif; jika sudah mencapai batas, backend
+  merespons `403` dengan pesan:
+  `Anda telah mencapai batas 2 proyek aktif pada paket Free. Upgrade ke Premium untuk membuat lebih banyak proyek.`
+
+### Kuota AI Rekomendasi
+
+- `GET /api/rekomendasi/:projectId/kuota` — cek sisa kuota rekomendasi.
+- `POST /api/rekomendasi/:projectId` — minta rekomendasi dekorasi (memakai 1 kuota).
+
 ## Struktur Data
 WedSpace menggunakan MySQL sebagai database relasional dengan model utama yang mencakup:
 
@@ -180,7 +240,8 @@ Status berikut menggambarkan progres pengembangan yang telah diperiksa, bukan pe
 | Editor layout 2D | Dalam pengembangan |
 | Estimasi biaya | Backend tersedia; frontend dalam pengembangan |
 | Visualisasi 3D | Belum selesai |
-| Rekomendasi dekorasi berbasis AI | Belum selesai |
+| Rekomendasi dekorasi berbasis AI | Sudah diimplementasikan (Gemini API + kuota Free/Premium) |
+| Sistem paket langganan (Free/Premium) | Selesai (batas di backend) |
 | Pengujian sistem menyeluruh | Belum selesai |
 
 ## Keamanan dan Konfigurasi

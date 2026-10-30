@@ -2,6 +2,7 @@ const express = require('express');
 const { z } = require('zod');
 const { Project, Design, DesignItem } = require('../models');
 const { authWajib } = require('../middleware/auth');
+const { cekBatasProyek } = require('../services/subscription');
 
 const router = express.Router();
 
@@ -15,7 +16,6 @@ const skemaProyek = z.object({
   anggaran: z.coerce.number().int('Anggaran harus bilangan bulat').nonnegative('Anggaran tidak boleh negatif').optional(),
 });
 
-// Memuat proyek dan memastikan WO hanya mengakses miliknya sendiri (FR-WO4, FR-WO6)
 async function muatProyek(req, res, next) {
   const proyek = await Project.findByPk(req.params.id);
   if (!proyek) {
@@ -35,7 +35,6 @@ function bersihRancangan(rancangan) {
   return { ...polos, jumlah_item };
 }
 
-// GET /api/proyek — daftar proyek milik WO (FR-WO4)
 router.get('/', authWajib, async (req, res) => {
   const where = req.user.role === 'admin' ? {} : { user_id: req.user.id };
   const daftar = await Project.findAll({
@@ -52,18 +51,27 @@ router.get('/', authWajib, async (req, res) => {
   return res.json({ data });
 });
 
-// POST /api/proyek — buat proyek sekaligus Rancangan 1 (FR-WO3)
 router.post('/', authWajib, async (req, res) => {
   const parsed = skemaProyek.safeParse(req.body);
   if (!parsed.success) {
     return res.status(400).json({ pesan: parsed.error.issues[0].message });
   }
+
+  const batas = await cekBatasProyek(req.user.id);
+  if (!batas.boleh) {
+    return res.status(403).json({
+      pesan: batas.pesan,
+      paket: batas.plan,
+      batas_proyek_aktif: batas.maks,
+      proyek_aktif: batas.terpakai,
+    });
+  }
+
   const proyek = await Project.create({ ...parsed.data, user_id: req.user.id });
   const rancangan = await Design.create({ project_id: proyek.id, nama_rancangan: 'Rancangan 1' });
   return res.status(201).json({ data: { ...proyek.toJSON(), rancangan: [rancangan] } });
 });
 
-// GET /api/proyek/:id — detail proyek beserta rancangannya (FR-WO4, FR-WO6, FR-WO17)
 router.get('/:id', authWajib, muatProyek, async (req, res) => {
   const rancangan = await Design.findAll({
     where: { project_id: req.proyek.id },
@@ -73,7 +81,6 @@ router.get('/:id', authWajib, muatProyek, async (req, res) => {
   return res.json({ data: { ...req.proyek.toJSON(), rancangan: rancangan.map(bersihRancangan) } });
 });
 
-// PUT /api/proyek/:id — ubah informasi proyek (FR-WO5)
 router.put('/:id', authWajib, muatProyek, async (req, res) => {
   const parsed = skemaProyek.partial().safeParse(req.body);
   if (!parsed.success) {
@@ -83,13 +90,11 @@ router.put('/:id', authWajib, muatProyek, async (req, res) => {
   return res.json({ data: req.proyek });
 });
 
-// DELETE /api/proyek/:id — hapus proyek beserta rancangannya (FR-WO6)
 router.delete('/:id', authWajib, muatProyek, async (req, res) => {
   await req.proyek.destroy();
   return res.json({ pesan: 'Proyek beserta seluruh rancangannya dihapus.' });
 });
 
-// GET /api/proyek/:id/rancangan — daftar rancangan sebuah proyek (FR-WO4, FR-WO17)
 router.get('/:id/rancangan', authWajib, muatProyek, async (req, res) => {
   const rancangan = await Design.findAll({
     where: { project_id: req.proyek.id },
@@ -99,7 +104,6 @@ router.get('/:id/rancangan', authWajib, muatProyek, async (req, res) => {
   return res.json({ data: rancangan.map(bersihRancangan) });
 });
 
-// POST /api/proyek/:id/rancangan — buat rancangan baru (FR-WO17)
 router.post('/:id/rancangan', authWajib, muatProyek, async (req, res) => {
   const parsed = z.object({ nama_rancangan: z.string().min(1, 'Nama rancangan wajib diisi').optional() }).safeParse(req.body || {});
   if (!parsed.success) {

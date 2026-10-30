@@ -2,10 +2,12 @@ const express = require('express');
 const { z } = require('zod');
 const { Design, DesignItem, Decoration, Project } = require('../models');
 const { authWajib } = require('../middleware/auth');
+const { getUserPlan } = require('../services/subscription');
+const { batasPaket } = require('../config/subscription');
+const { buatPdfRancangan } = require('../services/pdf');
 
 const router = express.Router();
 
-// Memuat rancangan dan memastikan WO hanya membuka miliknya sendiri (FR-WO9, FR-WO16, FR-WO17)
 async function muatRancangan(req, res, next) {
   const rancangan = await Design.findByPk(req.params.id, {
     include: [{ model: DesignItem, include: [{ model: Decoration }] }, { model: Project }],
@@ -20,7 +22,6 @@ async function muatRancangan(req, res, next) {
   return next();
 }
 
-// GET /api/rancangan/:id — buka rancangan beserta dekorasi di dalamnya (FR-WO9, FR-WO15, FR-WO16)
 router.get('/:id', authWajib, muatRancangan, async (req, res) => {
   const polos = req.rancangan.toJSON();
   return res.json({
@@ -31,7 +32,6 @@ router.get('/:id', authWajib, muatRancangan, async (req, res) => {
   });
 });
 
-// PUT /api/rancangan/:id — simpan rancangan (nama + seluruh design_items) (FR-WO9, FR-WO15, FR-WO16)
 router.put('/:id', authWajib, muatRancangan, async (req, res) => {
   const skema = z.object({
     nama_rancangan: z.string().min(1, 'Nama rancangan wajib diisi').optional(),
@@ -52,7 +52,6 @@ router.put('/:id', authWajib, muatRancangan, async (req, res) => {
     await req.rancangan.update({ nama_rancangan: parsed.data.nama_rancangan });
   }
 
-  // Ganti seluruh isi design_items lalu isi ulang (sederhana dan aman untuk simpan penuh)
   await DesignItem.destroy({ where: { design_id: req.rancangan.id } });
   if (parsed.data.item.length > 0) {
     await DesignItem.bulkCreate(parsed.data.item.map((i) => ({ ...i, design_id: req.rancangan.id })));
@@ -64,7 +63,6 @@ router.put('/:id', authWajib, muatRancangan, async (req, res) => {
   return res.json({ data: segar });
 });
 
-// GET /api/rancangan/:id/estimasi — rincian dan total biaya (FR-WO12)
 router.get('/:id/estimasi', authWajib, muatRancangan, async (req, res) => {
   const rincian = (req.rancangan.DesignItems || []).map((i) => {
     const harga = Number(i.Decoration?.harga || 0);
@@ -79,6 +77,22 @@ router.get('/:id/estimasi', authWajib, muatRancangan, async (req, res) => {
   });
   const total = rincian.reduce((s, r) => s + r.subtotal, 0);
   return res.json({ data: { rancangan_id: req.rancangan.id, rincian, total } });
+});
+
+router.get('/:id/ekspor', authWajib, muatRancangan, async (req, res) => {
+  const plan = await getUserPlan(req.user.id);
+  if (!batasPaket(plan).ekspor_pdf) {
+    return res.status(403).json({
+      pesan: 'Ekspor rancangan ke PDF hanya tersedia pada paket Premium. Upgrade ke Premium untuk membuka fitur ini.',
+      paket: plan,
+    });
+  }
+
+  const pdf = buatPdfRancangan(req.rancangan);
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `attachment; filename="rancangan-${req.rancangan.id}.pdf"`);
+  res.setHeader('Content-Length', pdf.length);
+  return res.send(pdf);
 });
 
 module.exports = router;
