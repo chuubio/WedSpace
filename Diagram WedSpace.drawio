@@ -1,0 +1,137 @@
+<mxfile host="65bd71144e">
+    <diagram name="Page-1" id="kt9TxArd-8-Sab8MaI9P">
+        <mxGraphModel dx="2197" dy="772" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="rb-UUL8AA63C8v1LmW-L-1" parent="1" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedHeader=1;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;fillColor=#b0e3e6;strokeColor=#0e8088;" value="Aplikasi Perancangan Venue Pernikahan Berbasis AR dan AI" vertex="1">
+                    <mxGeometry height="1119.9999999999998" width="620" x="115" y="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="rb-UUL8AA63C8v1LmW-L-2" parent="rb-UUL8AA63C8v1LmW-L-1" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fixedHeader=1;" value="" vertex="1">
+                    <mxGeometry height="1090" width="620" y="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="rb-UUL8AA63C8v1LmW-L-3" parent="rb-UUL8AA63C8v1LmW-L-2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;" value="" vertex="1">
+                    <mxGeometry height="1090" width="620" as="geometry">
+                        <mxRectangle height="1090" width="620" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rb-UUL8AA63C8v1LmW-L-4" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;strokeColor=#328A7F;fillColor=#F9F7ED;" value="Wedding&lt;div&gt;Organizer&lt;div&gt;(WO)&lt;/div&gt;&lt;/div&gt;" vertex="1">
+                    <mxGeometry height="110" width="60" x="15" y="340" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-22" edge="1" parent="1" source="rb-UUL8AA63C8v1LmW-L-14" style="edgeStyle=none;shape=connector;rounded=1;html=1;strokeColor=light-dark(#940000, #ffc5c5);align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=none;endFill=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;fillColor=#a20025;strokeWidth=2;">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="80" y="390" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rb-UUL8AA63C8v1LmW-L-14" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;fontFamily=Helvetica;fillColor=#f9f7ed;strokeColor=#328A7F;strokeWidth=2;" value="Membuat Proyek Venue" vertex="1">
+                    <mxGeometry height="70" width="178" x="336" y="190" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-21" edge="1" parent="1" source="F82sOFGnAI6MyaS-Oosa-1" style="edgeStyle=none;shape=connector;rounded=1;html=1;strokeColor=light-dark(#940000, #ffc5c5);align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=none;endFill=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;fillColor=#a20025;strokeWidth=2;">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="80" y="400" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="F82sOFGnAI6MyaS-Oosa-1" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;fontFamily=Helvetica;fillColor=#f9f7ed;strokeColor=#328A7F;strokeWidth=2;" value="Melihat Proyek dan Rancangan" vertex="1">
+                    <mxGeometry height="70" width="178" x="336" y="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-19" edge="1" parent="1" source="LMyZP-4dXc-qEyWIVSIv-1" style="edgeStyle=none;shape=connector;rounded=1;html=1;strokeColor=light-dark(#940000, #ffc5c5);align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=none;endFill=0;fillColor=#a20025;strokeWidth=2;">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="79.99999999999989" y="405" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-1" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;fontFamily=Helvetica;fillColor=#f9f7ed;strokeColor=#328A7F;strokeWidth=2;" value="Melihat Katalog Dekorasi" vertex="1">
+                    <mxGeometry height="70" width="178" x="336" y="370" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-12" edge="1" parent="1" source="LMyZP-4dXc-qEyWIVSIv-2" style="edgeStyle=none;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;dashed=1;" target="LMyZP-4dXc-qEyWIVSIv-1" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-24" edge="1" parent="1" source="LMyZP-4dXc-qEyWIVSIv-2" style="edgeStyle=none;shape=connector;rounded=1;html=1;strokeColor=light-dark(#940000, #ffc5c5);align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=none;endFill=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;fillColor=#a20025;strokeWidth=2;">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="80" y="410" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-2" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;fontFamily=Helvetica;fillColor=#f9f7ed;strokeColor=#328A7F;strokeWidth=2;" value="Merancang Layout Venue" vertex="1">
+                    <mxGeometry height="70" width="178" x="336" y="481" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-14" edge="1" parent="1" source="LMyZP-4dXc-qEyWIVSIv-3" style="edgeStyle=none;shape=connector;rounded=1;html=1;entryX=1;entryY=0;entryDx=0;entryDy=0;dashed=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" target="LMyZP-4dXc-qEyWIVSIv-2" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-3" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;fontFamily=Helvetica;fillColor=#f9f7ed;strokeColor=#328A7F;strokeWidth=2;align=center;verticalAlign=middle;fontSize=12;fontColor=default;" value="Mendapatkan Rekomendasi Dekorasi" vertex="1">
+                    <mxGeometry height="70" width="130" x="580" y="411" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-15" edge="1" parent="1" source="LMyZP-4dXc-qEyWIVSIv-4" style="edgeStyle=none;shape=connector;rounded=1;html=1;entryX=1;entryY=1;entryDx=0;entryDy=0;dashed=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="LMyZP-4dXc-qEyWIVSIv-2">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-16" connectable="0" parent="LMyZP-4dXc-qEyWIVSIv-15" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;&lt;/span&gt;" vertex="1">
+                    <mxGeometry relative="1" x="-0.1564" y="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-4" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;fontFamily=Helvetica;fillColor=#f9f7ed;strokeColor=#328A7F;strokeWidth=2;align=center;verticalAlign=middle;fontSize=12;fontColor=default;" value="Melihat Visualisasi AR" vertex="1">
+                    <mxGeometry height="70" width="130" x="580" y="530" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-17" edge="1" parent="1" source="LMyZP-4dXc-qEyWIVSIv-5" style="edgeStyle=none;shape=connector;rounded=1;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;dashed=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" target="LMyZP-4dXc-qEyWIVSIv-2">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-18" connectable="0" parent="LMyZP-4dXc-qEyWIVSIv-17" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;&amp;lt;&amp;lt;include&amp;gt;&amp;gt;&lt;/span&gt;" vertex="1">
+                    <mxGeometry relative="1" x="0.0966" y="-2" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-25" edge="1" parent="1" source="LMyZP-4dXc-qEyWIVSIv-5" style="edgeStyle=none;shape=connector;rounded=1;html=1;strokeColor=light-dark(#940000, #ffc5c5);align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=none;endFill=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;fillColor=#a20025;strokeWidth=2;">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="80" y="420" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-5" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;fontFamily=Helvetica;fillColor=#f9f7ed;strokeColor=#328A7F;strokeWidth=2;" value="Melihat Estimasi Biaya" vertex="1">
+                    <mxGeometry height="70" width="178" x="336" y="591" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-26" edge="1" parent="1" source="LMyZP-4dXc-qEyWIVSIv-6" style="edgeStyle=none;shape=connector;rounded=1;html=1;strokeColor=light-dark(#940000, #ffc5c5);align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=none;endFill=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;fillColor=#a20025;strokeWidth=2;">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="80" y="430" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-6" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;fontFamily=Helvetica;fillColor=#f9f7ed;strokeColor=#328A7F;strokeWidth=2;" value="Menyimpan Rancangan Venue" vertex="1">
+                    <mxGeometry height="70" width="178" x="336" y="701" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-23" edge="1" parent="1" source="LMyZP-4dXc-qEyWIVSIv-7" style="edgeStyle=none;shape=connector;rounded=1;html=1;strokeColor=light-dark(#940000, #ffc5c5);align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=none;endFill=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;fillColor=#a20025;strokeWidth=2;">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="80" y="380" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-7" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;fontFamily=Helvetica;fillColor=#f9f7ed;strokeColor=#328A7F;strokeWidth=2;" value="Login" vertex="1">
+                    <mxGeometry height="70" width="178" x="336" y="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-31" edge="1" parent="1" source="LMyZP-4dXc-qEyWIVSIv-8" style="edgeStyle=none;shape=connector;rounded=1;html=1;strokeColor=#1D514B;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=none;endFill=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;" target="LMyZP-4dXc-qEyWIVSIv-27">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-8" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;fontFamily=Helvetica;fillColor=light-dark(#ffe0e0, #572b2b);strokeColor=light-dark(#F0E2FF,#BABDC0);strokeWidth=2;align=center;verticalAlign=middle;fontSize=12;fontColor=default;" value="Menambah Data Dekorasi" vertex="1">
+                    <mxGeometry height="70" width="178" x="336" y="791" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-28" edge="1" parent="1" source="LMyZP-4dXc-qEyWIVSIv-9" style="edgeStyle=none;shape=connector;rounded=1;html=1;strokeColor=#1D514B;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=none;endFill=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;" target="LMyZP-4dXc-qEyWIVSIv-27">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="760" y="959.9999999999998" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-9" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;fontFamily=Helvetica;fillColor=light-dark(#ffe0e0, #572b2b);strokeColor=light-dark(#F0E2FF,#BABDC0);strokeWidth=2;" value="Mengubah Data Dekorasi" vertex="1">
+                    <mxGeometry height="70" width="178" x="336" y="881" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-29" edge="1" parent="1" source="LMyZP-4dXc-qEyWIVSIv-10" style="edgeStyle=none;shape=connector;rounded=1;html=1;strokeColor=#1D514B;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=none;endFill=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;" target="LMyZP-4dXc-qEyWIVSIv-27">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-10" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;fontFamily=Helvetica;fillColor=light-dark(#ffe0e0, #572b2b);strokeColor=light-dark(#F0E2FF,#BABDC0);strokeWidth=2;align=center;verticalAlign=middle;fontSize=12;fontColor=default;" value="Menghapus Data Dekorasi" vertex="1">
+                    <mxGeometry height="70" width="178" x="336" y="971" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-30" edge="1" parent="1" source="LMyZP-4dXc-qEyWIVSIv-11" style="edgeStyle=none;shape=connector;rounded=1;html=1;strokeColor=#1D514B;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=none;endFill=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;" target="LMyZP-4dXc-qEyWIVSIv-27">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-11" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;fontFamily=Helvetica;fillColor=light-dark(#ffe0e0, #572b2b);strokeColor=light-dark(#F0E2FF,#BABDC0);strokeWidth=2;align=center;verticalAlign=middle;fontSize=12;fontColor=default;" value="Logout" vertex="1">
+                    <mxGeometry height="70" width="178" x="336" y="1061" as="geometry"/>
+                </mxCell>
+                <mxCell id="LMyZP-4dXc-qEyWIVSIv-27" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;strokeColor=#1D514B;fillColor=#FFE0E0;" value="Admin" vertex="1">
+                    <mxGeometry height="110" width="60" x="770" y="900" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

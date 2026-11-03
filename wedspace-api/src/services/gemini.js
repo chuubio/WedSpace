@@ -2,7 +2,17 @@
 const { GoogleGenAI } = require('@google/genai');
 const { Decoration } = require('../models');
 
-const NAMA_MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+const NAMA_MODEL = process.env.GEMINI_MODEL || 'gemini-3.5-flash';
+
+// Google rutin menonaktifkan model lama (mis. gemini-2.0-flash sudah pensiun dan
+// mengembalikan 404 "no longer available"). Daftar ini dipakai sebagai cadangan
+// saat model utama tidak tersedia atau sedang sibuk.
+const MODEL_CADANGAN = [
+  'gemini-3.5-flash',
+  'gemini-3.1-flash-lite',
+  'gemini-flash-lite-latest',
+  'gemini-3.5-flash-lite',
+];
 
 const SYSTEM_INSTRUCTION = `Kamu adalah AI assistant untuk rekomendasi dekorasi pernikahan pada aplikasi WedSpace.
 
@@ -54,6 +64,17 @@ function errorKode(kode, pesan) {
   return err;
 }
 
+function daftarModelYangDicoba() {
+  return [...new Set([NAMA_MODEL, ...MODEL_CADANGAN].filter(Boolean))];
+}
+
+function galatModelBisaDicadangkan(err) {
+  const status = err?.status ?? err?.code ?? err?.error?.code;
+  if (status === 404 || status === 503) return true;
+  const pesan = String(err?.message || '').toLowerCase();
+  return /no longer available|not found|unavailable|high demand|overloaded/.test(pesan);
+}
+
 async function ambilKatalogUntukGemini() {
   const katalog = await Decoration.findAll({ where: { is_active: true }, order: [['id', 'ASC']] });
   const daftarKatalog = katalog.map((d) => ({
@@ -69,11 +90,33 @@ async function ambilKatalogUntukGemini() {
   return daftarKatalog;
 }
 
-async function mintaRekomendasiKeGemini(proyek, katalog) {
-  const clientAi = dapatkanClient();
+function skemaRekomendasi() {
+  return {
+    type: 'object',
+    properties: {
+      rekomendasi: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            decoration_id: { type: 'integer', format: 'int32', description: 'ID dekorasi dari katalog yang diberikan ke AI.' },
+            alasan: { type: 'string', description: 'Alasan rekomendasi dalam bahasa Indonesia.' },
+            jumlah_disarankan: { type: 'integer', format: 'int32', description: 'Jumlah dekorasi yang disarankan (bilangan bulat positif).' },
+          },
+          required: ['decoration_id', 'alasan', 'jumlah_disarankan'],
+          additionalProperties: false,
+        },
+      },
+      ringkasan: { type: 'string', description: 'Ringkasan singkat rekomendasi dalam bahasa Indonesia.' },
+    },
+    required: ['rekomendasi', 'ringkasan'],
+    additionalProperties: false,
+  };
+}
 
-  const hasilGenerasi = await clientAi.models.generateContent({
-    model: NAMA_MODEL,
+function kirimPermintaanKeGemini(clientAi, model, proyek, katalog) {
+  return clientAi.models.generateContent({
+    model,
     contents: {
       role: 'user',
       parts: [
@@ -85,29 +128,35 @@ async function mintaRekomendasiKeGemini(proyek, katalog) {
     config: {
       systemInstruction: SYSTEM_INSTRUCTION,
       responseMimeType: 'application/json',
-      responseSchema: {
-        type: 'object',
-        properties: {
-          rekomendasi: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                decoration_id: { type: 'integer', format: 'int32', description: 'ID dekorasi dari katalog yang diberikan ke AI.' },
-                alasan: { type: 'string', description: 'Alasan rekomendasi dalam bahasa Indonesia.' },
-                jumlah_disarankan: { type: 'integer', format: 'int32', description: 'Jumlah dekorasi yang disarankan (bilangan bulat positif).' },
-              },
-              required: ['decoration_id', 'alasan', 'jumlah_disarankan'],
-              additionalProperties: false,
-            },
-          },
-          ringkasan: { type: 'string', description: 'Ringkasan singkat rekomendasi dalam bahasa Indonesia.' },
-        },
-        required: ['rekomendasi', 'ringkasan'],
-        additionalProperties: false,
-      },
+      responseSchema: skemaRekomendasi(),
     },
   });
+}
+
+async function mintaRekomendasiKeGemini(proyek, katalog) {
+  const clientAi = dapatkanClient();
+  const modelDicoba = daftarModelYangDicoba();
+
+  let hasilGenerasi = null;
+  let galatTerakhir = null;
+
+  for (let i = 0; i < modelDicoba.length; i += 1) {
+    const model = modelDicoba[i];
+    try {
+      hasilGenerasi = await kirimPermintaanKeGemini(clientAi, model, proyek, katalog);
+      break;
+    } catch (err) {
+      galatTerakhir = err;
+      const adaModelCadangan = i < modelDicoba.length - 1;
+      if (!adaModelCadangan || !galatModelBisaDicadangkan(err)) break;
+      console.warn(`[gemini] Model ${model} tidak dapat dipakai (${err?.message}). Mencoba ${modelDicoba[i + 1]}.`);
+    }
+  }
+
+  if (!hasilGenerasi) {
+    const alasan = galatTerakhir?.message ? `: ${galatTerakhir.message}` : '.';
+    throw errorKode('GEMINI_ERROR', `Gemini gagal merespons${alasan}`);
+  }
 
   const teks = hasilGenerasi?.text;
   if (!teks) {
