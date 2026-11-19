@@ -34,6 +34,16 @@ const Decoration = sequelize.define('Decoration', {
   gambar: { type: DataTypes.STRING },
   deskripsi: { type: DataTypes.TEXT },
   is_active: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
+  created_by_user_id: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: { model: 'users', key: 'id' },
+  },
+  visibility: {
+    type: DataTypes.ENUM('private', 'public'),
+    allowNull: false,
+    defaultValue: 'private',
+  },
 }, { tableName: 'decorations', underscored: true });
 
 const DesignItem = sequelize.define('DesignItem', {
@@ -59,6 +69,9 @@ const RecommendationUsage = sequelize.define('RecommendationUsage', {
 
 User.hasMany(Project, { foreignKey: { name: 'user_id', allowNull: false }, onDelete: 'CASCADE' });
 Project.belongsTo(User, { foreignKey: 'user_id' });
+
+User.hasMany(Decoration, { foreignKey: 'created_by_user_id', onDelete: 'RESTRICT' });
+Decoration.belongsTo(User, { foreignKey: 'created_by_user_id' });
 
 User.hasOne(Subscription, { foreignKey: { name: 'user_id', allowNull: false }, onDelete: 'CASCADE' });
 Subscription.belongsTo(User, { foreignKey: 'user_id' });

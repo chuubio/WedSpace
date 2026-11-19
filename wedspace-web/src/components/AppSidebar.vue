@@ -17,7 +17,8 @@ const API_BASE = 'http://localhost:3000'
 const menuUtama = [
   { nama: 'Dashboard', ke: '/dashboard', ikon: 'fa-gauge' },
   { nama: 'Proyek Saya', ke: '/proyek', ikon: 'fa-folder-open' },
-  { nama: 'Katalog Dekorasi', ke: '/katalog', ikon: 'fa-images' },
+  { nama: 'Katalog Saya', ke: '/katalog/saya', ikon: 'fa-box-open' },
+  { nama: 'Katalog Komunitas', ke: '/katalog/komunitas', ikon: 'fa-users-viewfinder' },
   { nama: 'Langganan', ke: '/langganan', ikon: 'fa-crown' },
 ]
 

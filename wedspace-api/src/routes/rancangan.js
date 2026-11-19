@@ -1,16 +1,24 @@
 const express = require('express');
 const { z } = require('zod');
-const { Design, DesignItem, Decoration, Project } = require('../models');
+const { Op } = require('sequelize');
+const { Design, DesignItem, Decoration, Project, User } = require('../models');
 const { authWajib } = require('../middleware/auth');
 const { getUserPlan } = require('../services/subscription');
 const { batasPaket } = require('../config/subscription');
 const { buatPdfRancangan } = require('../services/pdf');
+const { bisaMenggunakanDekorasi, formatDekorasiRespons } = require('../services/dekorasiAuth');
 
 const router = express.Router();
 
 async function muatRancangan(req, res, next) {
   const rancangan = await Design.findByPk(req.params.id, {
-    include: [{ model: DesignItem, include: [{ model: Decoration }] }, { model: Project }],
+    include: [
+      {
+        model: DesignItem,
+        include: [{ model: Decoration, include: [{ model: User, attributes: ['id', 'nama'] }] }],
+      },
+      { model: Project },
+    ],
   });
   if (!rancangan) {
     return res.status(404).json({ pesan: 'Rancangan tidak ditemukan.' });
@@ -52,13 +60,44 @@ router.put('/:id', authWajib, muatRancangan, async (req, res) => {
     await req.rancangan.update({ nama_rancangan: parsed.data.nama_rancangan });
   }
 
+  // Validasi dekorasi yang akan ditambahkan ke rancangan
+  if (parsed.data.item.length > 0) {
+    const decorationIds = [...new Set(parsed.data.item.map((i) => i.decoration_id))];
+    const dekorasiList = await Decoration.findAll({
+      where: { id: { [Op.in]: decorationIds } },
+    });
+    const dekorasiMap = new Map(dekorasiList.map((d) => [d.id, d]));
+
+    for (const id of decorationIds) {
+      const d = dekorasiMap.get(id);
+      if (!d) {
+        return res.status(400).json({ pesan: `Dekorasi dengan ID ${id} tidak ditemukan.` });
+      }
+      if (!bisaMenggunakanDekorasi(req.user, d)) {
+        if (!d.is_active) {
+          return res.status(400).json({
+            pesan: `Dekorasi "${d.nama_dekorasi}" sudah tidak aktif dan tidak dapat digunakan dalam rancangan.`,
+          });
+        }
+        return res.status(403).json({
+          pesan: `Dekorasi "${d.nama_dekorasi}" bersifat privat dan tidak dapat digunakan dalam rancangan.`,
+        });
+      }
+    }
+  }
+
   await DesignItem.destroy({ where: { design_id: req.rancangan.id } });
   if (parsed.data.item.length > 0) {
     await DesignItem.bulkCreate(parsed.data.item.map((i) => ({ ...i, design_id: req.rancangan.id })));
   }
 
   const segar = await Design.findByPk(req.rancangan.id, {
-    include: [{ model: DesignItem, include: [{ model: Decoration }] }],
+    include: [
+      {
+        model: DesignItem,
+        include: [{ model: Decoration, include: [{ model: User, attributes: ['id', 'nama'] }] }],
+      },
+    ],
   });
   return res.json({ data: segar });
 });

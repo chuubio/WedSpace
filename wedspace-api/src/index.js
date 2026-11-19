@@ -10,11 +10,16 @@ const rancanganRoutes = require('./routes/rancangan');
 const dashboardRoutes = require('./routes/dashboard');
 const subscriptionRoutes = require('./routes/subscription');
 const rekomendasiRoutes = require('./routes/rekomendasi');
+const { periksaAksesMedia } = require('./middleware/mediaAkses');
 
 const app = express();
 app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+
+// File profil pengguna dapat diakses publik
+app.use('/uploads/profil', express.static(path.join(__dirname, '..', 'uploads', 'profil')));
+// File gambar dan model dekorasi diperiksa izin aksesnya (privat vs publik)
+app.get('/uploads/:tipe/:file', periksaAksesMedia);
 
 app.get('/api/ping', (req, res) => {
   res.json({ pesan: 'API WedSpace berjalan' });

@@ -1,5 +1,6 @@
 
 const { GoogleGenAI } = require('@google/genai');
+const { Op } = require('sequelize');
 const { Decoration } = require('../models');
 
 const NAMA_MODEL = process.env.GEMINI_MODEL || 'gemini-3.5-flash';
@@ -75,8 +76,20 @@ function galatModelBisaDicadangkan(err) {
   return /no longer available|not found|unavailable|high demand|overloaded/.test(pesan);
 }
 
-async function ambilKatalogUntukGemini() {
-  const katalog = await Decoration.findAll({ where: { is_active: true }, order: [['id', 'ASC']] });
+async function ambilKatalogUntukGemini(userId) {
+  const where = {
+    is_active: true,
+  };
+  if (userId) {
+    where[Op.or] = [
+      { created_by_user_id: userId },
+      { visibility: 'public' },
+    ];
+  } else {
+    where.visibility = 'public';
+  }
+
+  const katalog = await Decoration.findAll({ where, order: [['id', 'ASC']] });
   const daftarKatalog = katalog.map((d) => ({
     id: d.id,
     nama_dekorasi: d.nama_dekorasi,
@@ -173,8 +186,8 @@ async function mintaRekomendasiKeGemini(proyek, katalog) {
   return data;
 }
 
-async function buatRekomendasiDekorasi(proyek) {
-  const katalog = await ambilKatalogUntukGemini();
+async function buatRekomendasiDekorasi(proyek, userId) {
+  const katalog = await ambilKatalogUntukGemini(userId);
   const mapKatalog = new Map(katalog.map((d) => [d.id, d]));
 
   let data;
@@ -228,4 +241,5 @@ module.exports = {
   NAMA_MODEL,
   SYSTEM_INSTRUCTION,
   buatRekomendasiDekorasi,
+  ambilKatalogUntukGemini,
 };

@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node src/tests/test_hybrid_catalog.js && node src/tests/test_media_security.js && node src/tests/test_tahap3_frontend_backend.js && node src/tests/test_tahap4_workspace2d.js",
     "dev": "nodemon src/index.js",
-    "seed": "node src/seed.js"
+    "seed": "node src/seed.js",
+    "migrate": "node src/migrations/run-migration.js --up",
+    "migrate:undo": "node src/migrations/run-migration.js --down"
   },
   "keywords": [],
   "author": "",

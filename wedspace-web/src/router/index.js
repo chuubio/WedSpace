@@ -12,6 +12,8 @@ import EstimasiView from '../views/EstimasiView.vue'
 import AdminDekorasiView from '../views/AdminDekorasiView.vue'
 import PengaturanAkunView from '../views/PengaturanAkunView.vue'
 import LanggananView from '../views/LanggananView.vue'
+import KatalogSayaView from '../views/KatalogSayaView.vue'
+import KatalogKomunitasView from '../views/KatalogKomunitasView.vue'
 import { useAuthStore } from '../stores/auth'
 
 const publik = { layout: 'public' }
@@ -34,7 +36,9 @@ const router = createRouter({
     { path: '/proyek/baru', name: 'proyek-baru', component: ProyekFormView, meta: { ...app, butuhLogin: true, hanyaWO: true } },
     { path: '/proyek/:id', name: 'proyek-detail', component: ProyekDetailView, meta: { ...app, butuhLogin: true, hanyaWO: true } },
     { path: '/proyek/:id/edit', name: 'proyek-edit', component: ProyekFormView, meta: { ...app, butuhLogin: true, hanyaWO: true } },
-    { path: '/katalog', name: 'katalog', component: KatalogView, meta: { ...app, butuhLogin: true, hanyaWO: true } },
+    { path: '/katalog/saya', name: 'katalog-saya', component: KatalogSayaView, meta: { ...app, butuhLogin: true, hanyaWO: true } },
+    { path: '/katalog/komunitas', name: 'katalog-komunitas', component: KatalogKomunitasView, meta: { ...app, butuhLogin: true, hanyaWO: true } },
+    { path: '/katalog', redirect: '/katalog/komunitas' },
     { path: '/rancangan/:id/editor', name: 'editor', component: EditorView, meta: { ...blank, butuhLogin: true, hanyaWO: true } },
     { path: '/rancangan/:id/estimasi', name: 'estimasi', component: EstimasiView, meta: { ...app, butuhLogin: true, hanyaWO: true } },
     { path: '/rancangan/:id/3d', name: 'visualisasi-3d', component: Visualisasi3DView, meta: { ...blank, butuhLogin: true, hanyaWO: true } },

@@ -51,7 +51,7 @@ router.post('/:projectId', authWajib, muatProyek, async (req, res) => {
       anggaran: req.proyek.anggaran,
     };
 
-    const hasil = await buatRekomendasiDekorasi(requestData);
+    const hasil = await buatRekomendasiDekorasi(requestData, req.user.id);
     const rekomendasi = hasil.rekomendasi;
 
     await catatPemakaianRekomendasi(req.user.id, req.proyek.id, kuota.plan, requestData, hasil);

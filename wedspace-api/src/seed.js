@@ -160,8 +160,13 @@ async function seed() {
       const [dekorasi] = await Decoration.findOrCreate({
         where: {
           nama_dekorasi: data.nama_dekorasi,
+          created_by_user_id: null,
         },
-        defaults: data,
+        defaults: {
+          ...data,
+          created_by_user_id: null,
+          visibility: 'public',
+        },
       });
 
       dekorasiByName.set(dekorasi.nama_dekorasi, dekorasi);
