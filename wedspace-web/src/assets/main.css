@@ -1,23 +1,520 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
-@theme {
-  --font-sans: 'Plus Jakarta Sans', sans-serif;
-  --font-heading: 'Futura Md BT', 'Futura', 'Century Gothic', 'Trebuchet MS', sans-serif;
+:root {
+  /* Nectar-Inspired Playful Vintage Palette */
+  --ws-marshmallow: #FCF8F0;
+  --ws-strawberry: #FFCFDA;
+  --ws-violet: #C2C6FF;
+  --ws-licorice: #7F1125;
+  --ws-cherry: #CF2C2F;
+  --ws-bubblegum: #FF7EC0;
+  --ws-tutti: #CB2178;
+  --ws-peach: #FFA57D;
+  --ws-apple: #D5D242;
+  --ws-moss: #433C01;
+  --ws-paper: #FFFDF9;
+  --ws-grid-line: rgba(203, 33, 120, 0.11);
+}
 
-  --color-canvas: #FFF8FA;
-  --color-blush: #FCE7EF;
-  --color-petal: #F8D7E3;
-  --color-line: #F1DCE3;
-  --color-primary: #C97895;
-  --color-rosy: #E9A8BC;
-  --color-ink: #3F3035;
-  --color-muted: #806F75;
-  --color-danger: #C0392B;
+@theme {
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+
+  /* Named Nectar palette tokens */
+  --color-marshmallow: #FCF8F0;
+  --color-strawberry: #FFCFDA;
+  --color-violet: #C2C6FF;
+  --color-licorice: #7F1125;
+  --color-cherry: #CF2C2F;
+  --color-bubblegum: #FF7EC0;
+  --color-tutti: #CB2178;
+  --color-peach: #FFA57D;
+  --color-apple: #D5D242;
+  --color-moss: #433C01;
+  --color-paper: #FFFDF9;
+
+  /* Mapped legacy tokens so all existing utility references harmonize */
+  --color-canvas: #FCF8F0;
+  --color-blush: #FFCFDA;
+  --color-petal: #FFCFDA;
+  --color-line: #E6C5CE;
+  --color-primary: #CF2C2F;
+  --color-rosy: #FF7EC0;
+  --color-ink: #7F1125;
+  --color-muted: #8C4A58;
+  --color-danger: #CF2C2F;
 }
 
 @layer base {
+  html {
+    background-color: var(--ws-marshmallow);
+    color: var(--ws-licorice);
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-canvas font-sans text-ink;
+    @apply bg-marshmallow font-sans text-licorice antialiased selection:bg-strawberry selection:text-licorice;
+    overflow-x: hidden;
+  }
+
+  h1, h2, .font-heading {
+    font-family: var(--font-heading);
+    letter-spacing: -0.01em;
+  }
+}
+
+@layer components {
+  /* =========================================================================
+     1. GRID PAPER & STRIPED BACKGROUNDS
+     ========================================================================= */
+
+  /* Nectar Hero Grid Paper (Cream with delicate pink grid lines) */
+  .bg-grid-paper {
+    background-color: var(--ws-marshmallow);
+    background-image:
+      linear-gradient(to right, rgba(203, 33, 120, 0.11) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(203, 33, 120, 0.11) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  /* Ultra-subtle grid paper for workspace & 2D editor canvas */
+  .bg-grid-subtle {
+    background-color: var(--ws-marshmallow);
+    background-image:
+      linear-gradient(to right, rgba(127, 17, 37, 0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(127, 17, 37, 0.07) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* Vertical Strawberry & Marshmallow Stripes (like Nectar split section) */
+  .bg-stripes-pink {
+    background: repeating-linear-gradient(
+      90deg,
+      #FCF8F0 0px,
+      #FCF8F0 20px,
+      #FFCFDA 20px,
+      #FFCFDA 40px
+    );
+  }
+
+  /* Soft vertical stripes for sidebar/panels */
+  .bg-stripes-pink-soft {
+    background: repeating-linear-gradient(
+      90deg,
+      #FCF8F0 0px,
+      #FCF8F0 16px,
+      rgba(255, 207, 218, 0.45) 16px,
+      rgba(255, 207, 218, 0.45) 32px
+    );
+  }
+
+  /* Red & Cream Vintage Canopy Stripes */
+  .bg-stripes-cherry {
+    background: repeating-linear-gradient(
+      90deg,
+      #CF2C2F 0px,
+      #CF2C2F 18px,
+      #FCF8F0 18px,
+      #FCF8F0 36px
+    );
+  }
+
+  /* Diagonal Vintage Ribbon Stripes */
+  .bg-stripes-diagonal {
+    background: repeating-linear-gradient(
+      -45deg,
+      #FFCFDA 0px,
+      #FFCFDA 12px,
+      #FCF8F0 12px,
+      #FCF8F0 24px
+    );
+  }
+
+  /* Lavender & Cream Stripes */
+  .bg-stripes-violet {
+    background: repeating-linear-gradient(
+      90deg,
+      #FCF8F0 0px,
+      #FCF8F0 18px,
+      rgba(194, 198, 255, 0.45) 18px,
+      rgba(194, 198, 255, 0.45) 36px
+    );
+  }
+
+  /* =========================================================================
+     2. CHECKERBOARD PATTERNS
+     ========================================================================= */
+
+  /* Two-row Nectar Checkerboard Divider (Dark Licorice + Bubblegum/Strawberry) */
+  .checkerboard-divider {
+    height: 28px;
+    width: 100%;
+    background-color: #FFCFDA;
+    background-image:
+      linear-gradient(45deg, #7F1125 25%, transparent 25%),
+      linear-gradient(-45deg, #7F1125 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #7F1125 75%),
+      linear-gradient(-45deg, transparent 75%, #7F1125 75%);
+    background-size: 28px 28px;
+    background-position: 0 0, 0 14px, 14px -14px, -14px 0;
+  }
+
+  /* Subtle mini checkerboard trim for headers/cards */
+  .checkerboard-trim {
+    height: 16px;
+    width: 100%;
+    background-color: #FCF8F0;
+    background-image:
+      linear-gradient(45deg, #7F1125 25%, transparent 25%),
+      linear-gradient(-45deg, #7F1125 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #7F1125 75%),
+      linear-gradient(-45deg, transparent 75%, #7F1125 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+  }
+
+  /* Pink & Burgundy Canopy Checkerboard (like Nectar truck awning) */
+  .checkerboard-canopy {
+    background-color: #FFCFDA;
+    background-image:
+      linear-gradient(45deg, #7F1125 25%, transparent 25%),
+      linear-gradient(-45deg, #7F1125 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #7F1125 75%),
+      linear-gradient(-45deg, transparent 75%, #7F1125 75%);
+    background-size: 24px 24px;
+    background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+  }
+
+  /* =========================================================================
+     3. SCALLOPED EDGES (Nectar Signature)
+     ========================================================================= */
+
+  /* Navbar bottom scalloped overhang in Strawberry Cream (#FFCFDA) */
+  .scallop-bottom-pink {
+    position: relative;
+  }
+  .scallop-bottom-pink::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -14px;
+    height: 15px;
+    background-image: radial-gradient(circle at 16px 0, #FFCFDA 15px, transparent 15.5px);
+    background-size: 32px 15px;
+    background-repeat: repeat-x;
+    pointer-events: none;
+    z-index: 20;
+    filter: drop-shadow(0 2px 0 rgba(127, 17, 37, 0.14));
+  }
+
+  /* Scallop bottom edge in Marshmallow Cream */
+  .scallop-bottom-cream {
+    position: relative;
+  }
+  .scallop-bottom-cream::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -14px;
+    height: 15px;
+    background-image: radial-gradient(circle at 16px 0, #FCF8F0 15px, transparent 15.5px);
+    background-size: 32px 15px;
+    background-repeat: repeat-x;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Notebook spiral punch-holes at top of a cream card inside a red/colored section */
+  .notebook-punch-cherry {
+    height: 28px;
+    width: 100%;
+    background-image:
+      radial-gradient(circle at 20px 18px, #CF2C2F 9px, transparent 9.5px),
+      linear-gradient(to right, transparent 18.5px, #CF2C2F 18.5px, #CF2C2F 21.5px, transparent 21.5px);
+    background-size: 40px 28px, 40px 12px;
+    background-position: 0 0, 0 0;
+    background-repeat: repeat-x;
+  }
+
+  .notebook-punch-licorice {
+    height: 24px;
+    width: 100%;
+    background-image:
+      radial-gradient(circle at 18px 15px, #7F1125 7px, transparent 7.5px),
+      linear-gradient(to right, transparent 16.5px, #7F1125 16.5px, #7F1125 19.5px, transparent 19.5px);
+    background-size: 36px 24px, 36px 10px;
+    background-position: 0 0, 0 0;
+    background-repeat: repeat-x;
+  }
+
+  /* Cloud / Scalloped-edge card top & bottom for Lavender section */
+  .scallop-edge-top-cream {
+    height: 20px;
+    width: 100%;
+    background-image: radial-gradient(circle at 22px 20px, #FCF8F0 20px, transparent 20.5px);
+    background-size: 44px 20px;
+    background-repeat: repeat-x;
+  }
+  .scallop-edge-bottom-cream {
+    height: 20px;
+    width: 100%;
+    background-image: radial-gradient(circle at 22px 0px, #FCF8F0 20px, transparent 20.5px);
+    background-size: 44px 20px;
+    background-repeat: repeat-x;
+  }
+
+  /* =========================================================================
+     4. PAPER, TICKET, NOTEBOOK & SCRAPBOOK CARDS
+     ========================================================================= */
+
+  /* Editorial Paper Card with crisp Dark Licorice border and vintage offset shadow */
+  .ws-paper-card {
+    background-color: var(--ws-paper);
+    border: 1.5px solid var(--ws-licorice);
+    border-radius: 18px;
+    box-shadow: 4px 4px 0px var(--ws-licorice);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .ws-paper-card-hover:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px var(--ws-licorice);
+  }
+
+  /* Soft Paper Card (lighter shadow for dense grids/forms) */
+  .ws-card-soft {
+    background-color: var(--ws-paper);
+    border: 1.5px solid rgba(127, 17, 37, 0.28);
+    border-radius: 18px;
+    box-shadow: 3px 3px 0px rgba(127, 17, 37, 0.14);
+  }
+
+  /* Ticket-Shaped Card with side notches & perforation feel */
+  .ws-ticket {
+    position: relative;
+    background-color: var(--ws-paper);
+    border: 1.5px solid var(--ws-licorice);
+    border-radius: 16px;
+    box-shadow: 4px 4px 0px var(--ws-licorice);
+  }
+  .ws-ticket::before,
+  .ws-ticket::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 18px;
+    height: 18px;
+    background-color: var(--ws-marshmallow);
+    border: 1.5px solid var(--ws-licorice);
+    border-radius: 9999px;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  .ws-ticket::before {
+    left: -10px;
+    clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);
+  }
+  .ws-ticket::after {
+    right: -10px;
+    clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+  }
+
+  /* Washi Tape Corner Accents */
+  .ws-tape-tl {
+    position: absolute;
+    top: -10px;
+    left: -14px;
+    width: 64px;
+    height: 20px;
+    background-color: rgba(207, 44, 47, 0.88);
+    transform: rotate(-18deg);
+    pointer-events: none;
+    z-index: 10;
+    box-shadow: 1px 1px 0 rgba(127, 17, 37, 0.25);
+  }
+  .ws-tape-tr {
+    position: absolute;
+    top: -8px;
+    right: -14px;
+    width: 64px;
+    height: 20px;
+    background-color: rgba(207, 44, 47, 0.88);
+    transform: rotate(22deg);
+    pointer-events: none;
+    z-index: 10;
+    box-shadow: 1px 1px 0 rgba(127, 17, 37, 0.25);
+  }
+  .ws-tape-bl {
+    position: absolute;
+    bottom: -8px;
+    left: -12px;
+    width: 64px;
+    height: 20px;
+    background-color: rgba(207, 44, 47, 0.88);
+    transform: rotate(15deg);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* =========================================================================
+     5. STICKERS, LABELS & BUTTONS
+     ========================================================================= */
+
+  /* Editorial Small Uppercase Eyebrow Label */
+  .ws-eyebrow {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ws-licorice);
+  }
+
+  /* Sticker Pill Badge */
+  .ws-badge-sticker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    border: 1.5px solid var(--ws-licorice);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    box-shadow: 2px 2px 0px var(--ws-licorice);
+  }
+
+  /* Price Tag Shape */
+  .ws-price-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background-color: var(--ws-peach);
+    color: var(--ws-licorice);
+    border: 1.5px solid var(--ws-licorice);
+    border-radius: 8px 18px 18px 8px;
+    padding: 0.2rem 0.75rem 0.2rem 0.55rem;
+    font-weight: 700;
+    font-size: 0.85rem;
+    box-shadow: 2px 2px 0px var(--ws-licorice);
+  }
+  .ws-price-pill::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background-color: var(--ws-marshmallow);
+    border: 1.5px solid var(--ws-licorice);
+  }
+
+  /* Vintage Buttons */
+  .ws-btn-cherry {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--ws-cherry);
+    color: var(--ws-marshmallow);
+    border: 1.5px solid var(--ws-licorice);
+    border-radius: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 12px;
+    box-shadow: 3px 3px 0px var(--ws-licorice);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  }
+  .ws-btn-cherry:hover:not(:disabled) {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0px var(--ws-licorice);
+    background-color: #b82225;
+  }
+  .ws-btn-cherry:active:not(:disabled) {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px var(--ws-licorice);
+  }
+
+  .ws-btn-licorice {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--ws-licorice);
+    color: var(--ws-marshmallow);
+    border: 1.5px solid var(--ws-licorice);
+    border-radius: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 12px;
+    box-shadow: 3px 3px 0px rgba(207, 44, 47, 0.45);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .ws-btn-licorice:hover:not(:disabled) {
+    transform: translate(-1px, -1px);
+    background-color: #5e0c1b;
+  }
+
+  .ws-btn-violet {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--ws-violet);
+    color: var(--ws-licorice);
+    border: 1.5px solid var(--ws-licorice);
+    border-radius: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 12px;
+    box-shadow: 3px 3px 0px var(--ws-licorice);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .ws-btn-violet:hover:not(:disabled) {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0px var(--ws-licorice);
+  }
+
+  .ws-btn-paper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--ws-paper);
+    color: var(--ws-licorice);
+    border: 1.5px solid var(--ws-licorice);
+    border-radius: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-size: 12px;
+    box-shadow: 2.5px 2.5px 0px var(--ws-licorice);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  }
+  .ws-btn-paper:hover:not(:disabled) {
+    background-color: var(--ws-strawberry);
+    transform: translate(-1px, -1px);
+    box-shadow: 3.5px 3.5px 0px var(--ws-licorice);
+  }
+
+  /* Vintage Input Fields */
+  .ws-input {
+    width: 100%;
+    border-radius: 12px;
+    border: 1.5px solid var(--ws-licorice);
+    background-color: var(--ws-marshmallow);
+    padding: 0.65rem 1rem;
+    color: var(--ws-licorice);
+    font-size: 0.925rem;
+    outline: none;
+    box-shadow: inset 2px 2px 0px rgba(127, 17, 37, 0.06);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  }
+  .ws-input:focus {
+    background-color: #FFFDF9;
+    border-color: var(--ws-cherry);
+    box-shadow: 3px 3px 0px var(--ws-strawberry);
+  }
+  .ws-input::placeholder {
+    color: rgba(127, 17, 37, 0.45);
   }
 }

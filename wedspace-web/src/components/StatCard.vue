@@ -7,13 +7,18 @@ defineProps({
 </script>
 
 <template>
-  <div class="rounded-2xl border border-line bg-white p-5 shadow-[0_4px_18px_rgba(201,120,149,0.1)]">
-    <div class="flex items-center justify-between">
-      <p class="text-sm text-muted">{{ judul }}</p>
-      <span class="flex h-9 w-9 items-center justify-center rounded-full bg-blush">
-        <i :class="['fa-solid text-primary', ikon]"></i>
+  <div class="ws-ticket overflow-hidden bg-paper p-5">
+    <div class="flex items-center justify-between border-b border-dashed border-licorice/35 pb-3">
+      <p class="ws-eyebrow text-muted">{{ judul }}</p>
+      <span class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-licorice bg-strawberry text-cherry shadow-[2px_2px_0px_#7F1125]">
+        <i :class="['fa-solid text-sm', ikon]"></i>
       </span>
     </div>
-    <p class="font-heading mt-2 text-4xl font-bold">{{ nilai }}</p>
+    <div class="mt-3 flex items-baseline justify-between">
+      <p class="font-heading text-5xl font-bold leading-none text-licorice">{{ nilai }}</p>
+      <span class="rounded-md border border-licorice/30 bg-marshmallow px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-muted">
+        Tercatat
+      </span>
+    </div>
   </div>
 </template>

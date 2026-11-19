@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { useSubscriptionStore } from '../stores/subscription'
 import ProjectForm from '../components/ProjectForm.vue'
+import VintageOrnament from '../components/VintageOrnament.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -63,17 +64,31 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="mx-auto max-w-2xl">
-    <h1 class="font-heading text-4xl font-semibold">{{ modeEdit ? 'Ubah Proyek' : 'Buat Proyek Baru' }}</h1>
-    <p class="mt-1 text-sm text-muted">
-      {{ modeEdit ? 'Perbarui informasi proyek venue.' : 'Isi detail proyek — Rancangan 1 otomatis dibuat untukmu.' }}
-    </p>
+  <section class="mx-auto max-w-2xl space-y-5">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <span class="ws-badge-sticker bg-strawberry text-licorice">
+          {{ modeEdit ? 'Mode Sunting' : 'Berkas Baru' }}
+        </span>
+        <h1 class="font-heading mt-2 text-4xl font-bold text-licorice md:text-5xl">
+          {{ modeEdit ? 'Ubah Proyek' : 'Buat Proyek Baru' }}
+        </h1>
+        <p class="mt-1 text-sm text-muted">
+          {{ modeEdit ? 'Perbarui informasi proyek venue.' : 'Isi detail proyek — Rancangan 1 otomatis dibuat untukmu.' }}
+        </p>
+      </div>
+      <VintageOrnament variant="flower" warna="cherry" class="h-11 w-11" />
+    </div>
 
-    <p v-if="!modeEdit && dilarangMembuat" class="mt-4 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-700">
+    <p
+      v-if="!modeEdit && dilarangMembuat"
+      class="rounded-xl border-2 border-licorice bg-peach/55 px-4 py-3 text-sm font-semibold text-licorice shadow-[2px_2px_0px_#7F1125]"
+    >
+      <i class="fa-solid fa-crown mr-1.5 text-cherry"></i>
       Anda telah mencapai batas {{ sub.maksProyek }} proyek aktif pada paket Free. Upgrade ke Premium untuk membuat lebih banyak proyek.
     </p>
 
-    <div class="mt-5">
+    <div>
       <ProjectForm :awal="awal" :sibuk="sibuk" :error="error" :dilarang="dilarangMembuat" @simpan="simpan" @batal="router.back()" />
     </div>
   </section>

@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
+import VintageOrnament from '../components/VintageOrnament.vue'
 
 const auth = useAuthStore()
 const API = 'http://localhost:3000/api'
@@ -106,83 +107,100 @@ onMounted(muatProfil)
 </script>
 
 <template>
-  <section class="mx-auto max-w-2xl">
-    <h1 class="font-heading text-4xl font-semibold">Pengaturan Akun</h1>
-    <p class="mt-1 text-sm text-muted">Kelola nama dan foto profil akunmu.</p>
+  <section class="mx-auto max-w-2xl space-y-5">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <span class="ws-badge-sticker bg-strawberry text-licorice">Kartu Identitas</span>
+        <h1 class="font-heading mt-2 text-4xl font-bold text-licorice md:text-5xl">Pengaturan Akun</h1>
+        <p class="mt-1 text-sm text-muted">Kelola nama dan foto profil akunmu.</p>
+      </div>
+      <VintageOrnament variant="bow" warna="violet" class="h-12 w-14" />
+    </div>
 
-    <p v-if="pesan" class="mt-4 rounded-xl bg-green-50 px-4 py-3 text-sm text-green-700">{{ pesan }}</p>
-    <p v-if="error" class="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-danger">{{ error }}</p>
+    <p v-if="pesan" class="rounded-xl border-2 border-licorice bg-apple/45 px-4 py-3 text-sm font-semibold text-licorice">
+      <i class="fa-solid fa-check mr-1.5"></i>{{ pesan }}
+    </p>
+    <p v-if="error" class="rounded-xl border-2 border-licorice bg-strawberry/75 px-4 py-3 text-sm font-semibold text-cherry">
+      <i class="fa-solid fa-circle-exclamation mr-1.5"></i>{{ error }}
+    </p>
 
-    <div v-if="sibuk && !nama" class="mt-6 text-muted">Memuat profil…</div>
+    <div v-if="sibuk && !nama" class="ws-paper-card p-8 text-center text-muted">Memuat profil…</div>
 
-    <form v-else class="mt-6 rounded-2xl border border-line bg-white p-6" @submit.prevent="simpan">
-      <div class="flex items-center gap-4">
-        <span class="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl bg-blush text-3xl font-bold text-primary">
-          <img v-if="avatarUrl" :src="avatarUrl" alt="Foto profil" class="h-full w-full object-cover" />
-          <span v-else>{{ inisial }}</span>
-        </span>
-        <div>
-          <p class="font-semibold">{{ auth.user?.nama || 'Akun' }}</p>
-          <p class="text-sm text-muted">{{ auth.user?.username_email || '' }}</p>
-          <span class="mt-1 inline-block rounded-full bg-blush px-2.5 py-1 text-xs font-medium uppercase text-primary">
-            {{ auth.user?.role === 'admin' ? 'Admin' : 'Wedding Organizer' }}
-          </span>
-        </div>
+    <form v-else class="ws-paper-card overflow-hidden bg-paper" @submit.prevent="simpan">
+      <div class="bg-stripes-pink flex items-center justify-between border-b-2 border-licorice px-6 py-3">
+        <span class="ws-eyebrow">MEMBER PASS • WEDSPACE STUDIO</span>
+        <VintageOrnament variant="ticket-stamp" label="Verified Planner" />
       </div>
 
-      <div class="mt-5">
-        <label class="mb-1 block text-sm font-medium">Foto profil</label>
-        <div class="flex flex-wrap items-center gap-2">
-          <input ref="inputFile" type="file" accept="image/png,image/jpeg,image/webp" class="hidden" @change="pilihFoto" />
-          <button type="button" class="rounded-xl border border-line px-4 py-2.5 text-sm font-semibold hover:bg-canvas" @click="inputFile?.click()">
-            <i class="fa-solid fa-image mr-2 text-primary"></i>Pilih foto
+      <div class="p-6 sm:p-8">
+        <div class="flex flex-wrap items-center gap-5 rounded-2xl border-2 border-licorice bg-marshmallow p-4 shadow-[3px_3px_0px_#7F1125]">
+          <span class="flex h-20 w-20 flex-none items-center justify-center overflow-hidden rounded-2xl border-2 border-licorice bg-strawberry font-heading text-4xl font-bold text-cherry shadow-[2px_2px_0px_#7F1125]">
+            <img v-if="avatarUrl" :src="avatarUrl" alt="Foto profil" class="h-full w-full object-cover" />
+            <span v-else>{{ inisial }}</span>
+          </span>
+          <div>
+            <p class="font-heading text-2xl font-bold text-licorice">{{ auth.user?.nama || 'Akun' }}</p>
+            <p class="text-sm text-muted">{{ auth.user?.username_email || '' }}</p>
+            <span class="ws-badge-sticker mt-2 bg-peach text-licorice">
+              {{ auth.user?.role === 'admin' ? 'Admin' : 'Wedding Organizer' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <label class="ws-eyebrow mb-2 block">Foto profil</label>
+          <div class="flex flex-wrap items-center gap-2.5">
+            <input ref="inputFile" type="file" accept="image/png,image/jpeg,image/webp" class="hidden" @change="pilihFoto" />
+            <button type="button" class="ws-btn-paper px-4 py-2.5" @click="inputFile?.click()">
+              <i class="fa-solid fa-image mr-2 text-cherry"></i>Pilih foto
+            </button>
+            <button
+              v-if="fileFoto"
+              type="button"
+              class="ws-btn-paper !border-cherry !text-cherry px-4 py-2.5"
+              @click="hapusPilihanFoto"
+            >
+              Batalkan pilihan
+            </button>
+          </div>
+          <p class="mt-1.5 text-xs text-muted">PNG, JPG, atau WebP, maksimal 5 MB.</p>
+        </div>
+
+        <div class="mt-5">
+          <label class="ws-eyebrow mb-1.5 block">Nama</label>
+          <input
+            v-model="nama"
+            placeholder="Nama lengkap"
+            class="ws-input"
+          />
+        </div>
+
+        <div class="mt-4">
+          <label class="ws-eyebrow mb-1.5 block">Email</label>
+          <input
+            :value="auth.user?.username_email || ''"
+            disabled
+            class="ws-input cursor-not-allowed !bg-strawberry/25 opacity-75"
+          />
+          <p class="mt-1.5 text-xs text-muted">Email dipakai untuk login dan tidak bisa diubah di sini.</p>
+        </div>
+
+        <div class="mt-6 flex gap-3 border-t border-dashed border-licorice/35 pt-5">
+          <button
+            type="button"
+            class="ws-btn-paper flex-1 py-3"
+            @click="segarkanDariStore"
+          >
+            Atur Ulang
           </button>
           <button
-            v-if="fileFoto"
-            type="button"
-            class="rounded-xl border border-line px-4 py-2.5 text-sm font-medium text-muted hover:bg-canvas"
-            @click="hapusPilihanFoto"
+            type="submit"
+            :disabled="menyimpan"
+            class="ws-btn-cherry flex-1 py-3 disabled:opacity-60"
           >
-            Batalkan pilihan
+            {{ menyimpan ? 'Menyimpan…' : 'Simpan Perubahan' }}
           </button>
         </div>
-        <p class="mt-1.5 text-xs text-muted">PNG, JPG, atau WebP, maksimal 5 MB.</p>
-      </div>
-
-      <div class="mt-4">
-        <label class="mb-1 block text-sm font-medium">Nama</label>
-        <input
-          v-model="nama"
-          placeholder="Nama lengkap"
-          class="w-full rounded-xl border border-line bg-canvas px-4 py-2.5 outline-none focus:border-primary"
-        />
-      </div>
-
-      <div class="mt-4">
-        <label class="mb-1 block text-sm font-medium">Email</label>
-        <input
-          :value="auth.user?.username_email || ''"
-          disabled
-          class="w-full cursor-not-allowed rounded-xl border border-line bg-gray-50 px-4 py-2.5 text-muted outline-none"
-        />
-        <p class="mt-1.5 text-xs text-muted">Email dipakai untuk login dan tidak bisa diubah di sini.</p>
-      </div>
-
-      <div class="mt-6 flex gap-2">
-        <button
-          type="button"
-          class="flex-1 rounded-xl border border-line py-2.5 font-semibold hover:bg-canvas"
-          @click="segarkanDariStore"
-        >
-          Atur Ulang
-        </button>
-        <button
-          type="submit"
-          :disabled="menyimpan"
-          class="flex-1 rounded-xl bg-primary py-2.5 font-semibold text-white hover:opacity-90 disabled:opacity-60"
-        >
-          {{ menyimpan ? 'Menyimpan…' : 'Simpan Perubahan' }}
-        </button>
       </div>
     </form>
   </section>

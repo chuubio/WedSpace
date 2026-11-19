@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useSubscriptionStore } from '../stores/subscription'
 import ConfirmModal from '../components/ConfirmModal.vue'
+import VintageOrnament from '../components/VintageOrnament.vue'
 
 const sub = useSubscriptionStore()
 
@@ -123,35 +124,64 @@ onMounted(muat)
 </script>
 
 <template>
-  <section class="mx-auto max-w-4xl">
-    <h1 class="font-heading text-4xl font-semibold md:text-5xl">Paket Langganan</h1>
-    <p class="mt-1.5 text-sm text-muted">
-      Paket menentukan batas penggunaan fitur WedSpace. Paket berbeda dari role akun (WO/Admin).
+  <section class="mx-auto max-w-4xl space-y-6">
+    <!-- Editorial Header with Ribbon & Sticker -->
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <span class="ws-badge-sticker bg-violet text-licorice">
+          <i class="fa-solid fa-crown text-cherry"></i> WedSpace Club
+        </span>
+        <h1 class="font-heading mt-2 text-4xl font-bold text-licorice md:text-5xl">Paket Langganan</h1>
+        <p class="mt-1.5 text-sm text-muted">
+          Paket menentukan batas penggunaan fitur WedSpace. Paket berbeda dari role akun (WO/Admin).
+        </p>
+      </div>
+      <VintageOrnament variant="oval-sticker" label="vip planner club!" warna="peach" class="-rotate-3" />
+    </div>
+
+    <p v-if="pesan" class="rounded-xl border-2 border-licorice bg-apple/45 px-4 py-3 text-sm font-semibold text-licorice">
+      <i class="fa-solid fa-check mr-1.5"></i>{{ pesan }}
+    </p>
+    <p v-if="galat" class="rounded-xl border-2 border-licorice bg-strawberry/75 px-4 py-3 text-sm font-semibold text-cherry">
+      <i class="fa-solid fa-circle-exclamation mr-1.5"></i>{{ galat }}
     </p>
 
-    <p v-if="pesan" class="mt-4 rounded-xl bg-green-50 px-4 py-3 text-sm text-green-700">{{ pesan }}</p>
-    <p v-if="galat" class="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-danger">{{ galat }}</p>
-
-    <p v-if="sub.sibuk && !sub.ringkasan" class="mt-6 text-muted">Memuat paket langganan…</p>
+    <p v-if="sub.sibuk && !sub.ringkasan" class="ws-paper-card p-8 text-center text-muted">
+      Memuat paket langganan…
+    </p>
 
     <template v-else-if="sub.ringkasan">
-      <!-- Kartu paket aktif -->
-      <div class="mt-6 overflow-hidden rounded-2xl border border-line bg-white shadow-[0_4px_18px_rgba(201,120,149,0.1)]">
-        <div class="flex flex-wrap items-start justify-between gap-4 p-6">
+      <!-- Kartu paket aktif: Nectar Club Scalloped / Ticket Showcase -->
+      <div class="ws-paper-card overflow-hidden bg-marshmallow">
+        <div
+          :class="[
+            'flex flex-wrap items-center justify-between gap-2 border-b-2 border-licorice px-6 py-3',
+            sub.adalahPremium ? 'bg-violet' : 'bg-stripes-pink',
+          ]"
+        >
+          <span class="ws-eyebrow">TIKET KEANGGOTAAN AKTIF</span>
+          <VintageOrnament variant="ticket-stamp" :label="`Plan: ${sub.namaPaket}`" />
+        </div>
+
+        <div class="flex flex-wrap items-start justify-between gap-6 p-6 md:p-8">
           <div>
-            <p class="text-xs font-semibold uppercase tracking-wider text-muted">Paket kamu saat ini</p>
-            <div class="mt-1.5 flex items-center gap-2">
-              <span class="font-heading text-3xl font-bold">{{ sub.namaPaket }}</span>
+            <p class="ws-eyebrow text-muted">Paket kamu saat ini</p>
+            <div class="mt-2 flex flex-wrap items-center gap-3">
+              <span class="font-heading text-5xl font-bold text-licorice">{{ sub.namaPaket }}</span>
               <span
                 v-if="sub.adalahPremium"
-                class="rounded-full bg-blush px-2.5 py-1 text-xs font-semibold text-primary"
-              >Aktif</span>
+                class="ws-badge-sticker bg-strawberry text-licorice"
+              >
+                <i class="fa-solid fa-star text-cherry"></i> Aktif
+              </span>
               <span
                 v-else-if="sub.adalahAdmin"
-                class="rounded-full bg-canvas px-2.5 py-1 text-xs font-medium text-muted"
-              >Tanpa batasan</span>
+                class="ws-badge-sticker bg-peach text-licorice"
+              >
+                Tanpa batasan
+              </span>
             </div>
-            <p class="mt-1.5 max-w-md text-sm text-muted">
+            <p class="mt-2.5 max-w-md text-sm leading-relaxed text-muted">
               <template v-if="sub.adalahAdmin">
                 Admin tidak dibatasi paket Free/Premium.
               </template>
@@ -164,10 +194,10 @@ onMounted(muat)
             </p>
           </div>
 
-          <div class="flex flex-col items-stretch gap-2">
+          <div class="flex flex-col items-stretch gap-2.5">
             <button
               v-if="!sub.adalahPremium && !sub.adalahAdmin"
-              class="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
+              class="ws-btn-cherry px-6 py-3 disabled:opacity-60"
               :disabled="memproses"
               @click="modalUpgrade = true"
             >
@@ -175,7 +205,7 @@ onMounted(muat)
             </button>
             <button
               v-else-if="sub.adalahPremium"
-              class="rounded-xl border border-line bg-white px-5 py-2.5 text-sm font-medium hover:bg-canvas disabled:opacity-60"
+              class="ws-btn-paper px-6 py-3 disabled:opacity-60"
               :disabled="memproses"
               @click="modalBatal = true"
             >
@@ -184,45 +214,45 @@ onMounted(muat)
             <RouterLink
               v-if="!sub.adalahAdmin"
               to="/proyek"
-              class="rounded-xl border border-line px-5 py-2.5 text-center text-sm font-medium hover:bg-canvas"
+              class="ws-btn-violet px-6 py-2.5 text-center"
             >
               Ke Proyek Saya
             </RouterLink>
           </div>
         </div>
 
-        <dl class="divide-y divide-line border-t border-line">
-          <div v-for="baris in ringkasanPaket" :key="baris.label" class="flex items-center justify-between gap-3 px-6 py-3">
-            <dt class="text-sm text-muted">{{ baris.label }}</dt>
-            <dd class="text-right text-sm font-semibold">{{ baris.nilai }}</dd>
+        <dl class="divide-y divide-dashed divide-licorice/30 border-t-2 border-licorice bg-paper">
+          <div v-for="baris in ringkasanPaket" :key="baris.label" class="flex items-center justify-between gap-3 px-6 py-3.5">
+            <dt class="text-sm font-medium text-muted">{{ baris.label }}</dt>
+            <dd class="text-right text-sm font-bold text-licorice">{{ baris.nilai }}</dd>
           </div>
-          <div v-if="sub.adalahPremium" class="flex items-center justify-between gap-3 px-6 py-3">
-            <dt class="text-sm text-muted">Berlaku sampai</dt>
-            <dd class="text-right text-sm font-semibold">{{ berlakuSampai }}</dd>
+          <div v-if="sub.adalahPremium" class="flex items-center justify-between gap-3 bg-strawberry/35 px-6 py-3.5">
+            <dt class="text-sm font-medium text-muted">Berlaku sampai</dt>
+            <dd class="text-right text-sm font-bold text-cherry">{{ berlakuSampai }}</dd>
           </div>
         </dl>
       </div>
 
-      <!-- Pemakaian -->
-      <div class="mt-4 grid gap-4 sm:grid-cols-2">
-        <div class="rounded-2xl border border-line bg-white p-5">
-          <div class="flex items-center justify-between">
-            <p class="text-sm text-muted">Proyek aktif</p>
-            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-blush text-primary">
+      <!-- Pemakaian (Ticket Cards) -->
+      <div class="grid gap-5 sm:grid-cols-2">
+        <div class="ws-ticket bg-paper p-5">
+          <div class="flex items-center justify-between border-b border-dashed border-licorice/35 pb-3">
+            <p class="ws-eyebrow text-muted">Proyek aktif</p>
+            <span class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-licorice bg-strawberry text-cherry shadow-[2px_2px_0px_#7F1125]">
               <i class="fa-solid fa-folder-open"></i>
             </span>
           </div>
-          <p class="font-heading mt-2 text-3xl font-bold">
+          <p class="font-heading mt-3 text-4xl font-bold text-licorice">
             {{ proyekAktif }}
-            <span class="text-base font-medium text-muted">/ {{ labelMaksProyek }}</span>
+            <span class="font-sans text-sm font-semibold text-muted">/ {{ labelMaksProyek }}</span>
           </p>
-          <div class="mt-3 h-2 overflow-hidden rounded-full bg-canvas">
+          <div class="mt-3 h-3 overflow-hidden rounded-full border border-licorice bg-marshmallow">
             <div
-              :class="['h-full rounded-full', sub.proyekPenuh ? 'bg-danger' : 'bg-primary']"
+              :class="['h-full rounded-full', sub.proyekPenuh ? 'bg-cherry' : 'bg-violet']"
               :style="{ width: `${persenProyek}%` }"
             ></div>
           </div>
-          <p v-if="sub.proyekPenuh" class="mt-2 text-xs text-danger">
+          <p v-if="sub.proyekPenuh" class="mt-2 text-xs font-bold text-cherry">
             Batas proyek paket Free sudah tercapai.
           </p>
           <p v-else-if="maksProyek !== null" class="mt-2 text-xs text-muted">
@@ -230,53 +260,57 @@ onMounted(muat)
           </p>
         </div>
 
-        <div class="rounded-2xl border border-line bg-white p-5">
-          <div class="flex items-center justify-between">
-            <p class="text-sm text-muted">AI rekomendasi ({{ jendelaKuota }} hari terakhir)</p>
-            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-blush text-primary">
-              <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <div class="ws-ticket bg-paper p-5">
+          <div class="flex items-center justify-between border-b border-dashed border-licorice/35 pb-3">
+            <p class="ws-eyebrow text-muted">AI rekomendasi ({{ jendelaKuota }} hari terakhir)</p>
+            <span class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-licorice bg-violet text-licorice shadow-[2px_2px_0px_#7F1125]">
+              <i class="fa-solid fa-wand-magic-sparkles text-cherry"></i>
             </span>
           </div>
-          <p class="font-heading mt-2 text-3xl font-bold">
+          <p class="font-heading mt-3 text-4xl font-bold text-licorice">
             {{ sub.ringkasan.pemakaian?.rekomendasi_minggu_ini ?? 0 }}
-            <span class="text-base font-medium text-muted">pemakaian</span>
+            <span class="font-sans text-sm font-semibold text-muted">pemakaian</span>
           </p>
-          <p class="mt-2 text-xs text-muted">
+          <p class="mt-3 text-xs text-muted">
             Kuota: {{ labelKuotaAi }} untuk setiap proyek.
           </p>
         </div>
       </div>
 
-      <!-- Perbandingan paket -->
-      <div class="mt-4 overflow-hidden rounded-2xl border border-line bg-white">
-        <div class="border-b border-line px-6 py-4">
-          <h2 class="font-heading text-xl font-semibold">Perbandingan paket</h2>
-          <p class="text-sm text-muted">Fitur dasar tetap tersedia di kedua paket.</p>
+      <!-- Perbandingan paket (Editorial Table) -->
+      <div class="ws-paper-card overflow-hidden bg-paper">
+        <div class="border-b-2 border-licorice bg-strawberry px-6 py-4">
+          <h2 class="font-heading text-2xl font-bold text-licorice">Perbandingan paket</h2>
+          <p class="text-xs font-medium text-licorice/80">Fitur dasar tetap tersedia di kedua paket.</p>
         </div>
-        <table class="w-full text-sm">
-          <thead>
-            <tr class="border-b border-line text-left text-xs uppercase tracking-wider text-muted">
-              <th class="px-6 py-3 font-semibold">Fitur</th>
-              <th class="px-4 py-3 font-semibold">Free</th>
-              <th class="px-4 py-3 font-semibold">Premium</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-line">
-            <tr v-for="baris in perbandingan" :key="baris.fitur">
-              <td class="px-6 py-3">{{ baris.fitur }}</td>
-              <td class="px-4 py-3 text-muted">{{ baris.free }}</td>
-              <td class="px-4 py-3 font-medium">{{ baris.premium }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b-2 border-licorice bg-licorice text-left text-xs uppercase tracking-wider text-marshmallow">
+                <th class="px-6 py-3.5 font-bold">Fitur</th>
+                <th class="px-4 py-3.5 font-bold">Free</th>
+                <th class="bg-cherry px-4 py-3.5 font-bold text-marshmallow">
+                  <i class="fa-solid fa-crown mr-1"></i>Premium
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-licorice/20">
+              <tr v-for="baris in perbandingan" :key="baris.fitur" class="hover:bg-strawberry/20">
+                <td class="px-6 py-3.5 font-semibold text-licorice">{{ baris.fitur }}</td>
+                <td class="px-4 py-3.5 text-muted">{{ baris.free }}</td>
+                <td class="bg-violet/25 px-4 py-3.5 font-bold text-licorice">{{ baris.premium }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <!-- Panel simulasi -->
-      <div class="mt-4 rounded-2xl border border-dashed border-line bg-white p-5">
-        <p class="text-sm font-semibold">
-          <i class="fa-solid fa-flask mr-1.5 text-primary"></i>Mode simulasi (tanpa pembayaran)
+      <div class="rounded-2xl border-2 border-dashed border-licorice bg-strawberry/35 p-5">
+        <p class="text-sm font-bold text-licorice">
+          <i class="fa-solid fa-flask mr-1.5 text-cherry"></i>Mode simulasi (tanpa pembayaran)
         </p>
-        <p class="mt-1 text-sm text-muted">
+        <p class="mt-1 text-sm leading-relaxed text-muted">
           Payment gateway belum terintegrasi. Tombol di atas hanya mengubah status langganan di database
           untuk pengujian lokal, memakai durasi dari konfigurasi backend.
         </p>

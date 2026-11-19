@@ -37,51 +37,70 @@ watch(() => props.awal, (v) => {
   }
 }, { immediate: true })
 
-const medan = 'w-full rounded-xl border border-line bg-canvas px-4 py-2.5 outline-none focus:border-primary'
+const medan = 'ws-input'
 </script>
 
 <template>
-  <form class="rounded-2xl border border-line bg-white p-6 shadow-[0_4px_18px_rgba(201,120,149,0.1)]" @submit.prevent="kirim">
-    <div class="grid gap-4 md:grid-cols-2">
-      <div class="md:col-span-2">
-        <label class="mb-1 block text-sm font-medium" for="nama-proyek">Nama proyek</label>
-        <input id="nama-proyek" v-model="form.nama_proyek" placeholder="cth: Pernikahan Rina & Dimas" :class="medan" />
-      </div>
-      <div class="md:col-span-2">
-        <label class="mb-1 block text-sm font-medium" for="nama-venue">Nama venue</label>
-        <input id="nama-venue" v-model="form.nama_venue" placeholder="cth: Grand Ballroom Balikpapan" :class="medan" />
-      </div>
-      <div>
-        <label class="mb-1 block text-sm font-medium" for="panjang">Panjang venue (m)</label>
-        <input id="panjang" v-model="form.panjang_venue" type="number" min="0" step="any" :class="medan" />
-      </div>
-      <div>
-        <label class="mb-1 block text-sm font-medium" for="lebar">Lebar venue (m)</label>
-        <input id="lebar" v-model="form.lebar_venue" type="number" min="0" step="any" :class="medan" />
-      </div>
-      <div>
-        <label class="mb-1 block text-sm font-medium" for="tamu">Jumlah tamu</label>
-        <input id="tamu" v-model="form.jumlah_tamu" type="number" min="0" step="1" :class="medan" />
-      </div>
-      <div>
-        <label class="mb-1 block text-sm font-medium" for="anggaran">Anggaran (Rp)</label>
-        <input id="anggaran" v-model="form.anggaran" type="number" min="0" step="1" :class="medan" />
-      </div>
-      <div class="md:col-span-2">
-        <label class="mb-1 block text-sm font-medium" for="tema">Tema</label>
-        <input id="tema" v-model="form.tema" placeholder="cth: Rustic Elegan" :class="medan" />
-      </div>
+  <form class="ws-paper-card overflow-hidden bg-paper" @submit.prevent="kirim">
+    <!-- Decorative Spiral Notebook Top Bar -->
+    <div class="bg-stripes-pink flex items-center justify-between border-b-2 border-licorice px-6 py-3">
+      <span class="ws-eyebrow">Formulir Spesifikasi Venue</span>
+      <span class="rounded-full border border-licorice bg-peach px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-licorice">
+        Lembar Kerja WO
+      </span>
     </div>
 
-    <p v-if="error" class="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-danger">{{ error }}</p>
+    <div class="p-6 sm:p-8">
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="md:col-span-2">
+          <label class="ws-eyebrow mb-1.5 block" for="nama-proyek">Nama proyek</label>
+          <input id="nama-proyek" v-model="form.nama_proyek" placeholder="cth: Pernikahan Rina & Dimas" :class="medan" />
+        </div>
+        <div class="md:col-span-2">
+          <label class="ws-eyebrow mb-1.5 block" for="nama-venue">Nama venue</label>
+          <input id="nama-venue" v-model="form.nama_venue" placeholder="cth: Grand Ballroom Balikpapan" :class="medan" />
+        </div>
+        <div>
+          <label class="ws-eyebrow mb-1.5 block" for="panjang">Panjang venue (m)</label>
+          <input id="panjang" v-model="form.panjang_venue" type="number" min="0" step="any" :class="medan" />
+        </div>
+        <div>
+          <label class="ws-eyebrow mb-1.5 block" for="lebar">Lebar venue (m)</label>
+          <input id="lebar" v-model="form.lebar_venue" type="number" min="0" step="any" :class="medan" />
+        </div>
+        <div>
+          <label class="ws-eyebrow mb-1.5 block" for="tamu">Jumlah tamu</label>
+          <input id="tamu" v-model="form.jumlah_tamu" type="number" min="0" step="1" :class="medan" />
+        </div>
+        <div>
+          <label class="ws-eyebrow mb-1.5 block" for="anggaran">Anggaran (Rp)</label>
+          <input id="anggaran" v-model="form.anggaran" type="number" min="0" step="1" :class="medan" />
+        </div>
+        <div class="md:col-span-2">
+          <label class="ws-eyebrow mb-1.5 block" for="tema">Tema</label>
+          <input id="tema" v-model="form.tema" placeholder="cth: Rustic Elegan" :class="medan" />
+        </div>
+      </div>
 
-    <div class="mt-5 flex gap-2">
-      <button type="button" class="flex-1 rounded-xl border border-line py-2.5 font-semibold hover:bg-canvas" @click="$emit('batal')">
-        Batal
-      </button>
-      <button type="submit" :disabled="sibuk || dilarang" class="flex-1 rounded-xl bg-primary py-2.5 font-semibold text-white hover:opacity-90 disabled:opacity-60">
-        {{ sibuk ? 'Menyimpan…' : 'Simpan Proyek' }}
-      </button>
+      <p
+        v-if="error"
+        class="mt-4 rounded-xl border-2 border-licorice bg-strawberry/75 px-4 py-3 text-sm font-semibold text-cherry"
+      >
+        <i class="fa-solid fa-circle-exclamation mr-1.5"></i>{{ error }}
+      </p>
+
+      <div class="mt-6 flex gap-3 border-t border-dashed border-licorice/35 pt-5">
+        <button type="button" class="ws-btn-paper flex-1 py-3" @click="$emit('batal')">
+          Batal
+        </button>
+        <button
+          type="submit"
+          :disabled="sibuk || dilarang"
+          class="ws-btn-cherry flex-1 py-3 disabled:opacity-60"
+        >
+          {{ sibuk ? 'Menyimpan…' : 'Simpan Proyek' }}
+        </button>
+      </div>
     </div>
   </form>
 </template>

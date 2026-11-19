@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useSubscriptionStore } from '../stores/subscription'
 import StatCard from '../components/StatCard.vue'
+import VintageOrnament from '../components/VintageOrnament.vue'
 
 const auth = useAuthStore()
 const sub = useSubscriptionStore()
@@ -60,86 +61,150 @@ onMounted(() => {
 
 <template>
   <!-- Dashboard admin: khusus pengelolaan data dekorasi, tanpa proyek & katalog WO -->
-  <section v-if="adalahAdmin">
-    <h1 class="font-heading text-4xl font-semibold md:text-5xl">Dashboard Admin</h1>
-    <p class="mt-2 text-base text-muted">Ringkasan data dekorasi WedSpace.</p>
+  <section v-if="adalahAdmin" class="space-y-6">
+    <div class="ws-paper-card bg-grid-paper relative overflow-hidden">
+      <div class="bg-stripes-pink flex items-center justify-between border-b-2 border-licorice px-6 py-2.5">
+        <span class="ws-eyebrow">CURATOR DESK • ADMINISTRATOR</span>
+        <VintageOrnament variant="ticket-stamp" label="Admin Edition" />
+      </div>
+      <div class="flex flex-wrap items-center justify-between gap-4 p-6 md:p-8">
+        <div>
+          <h1 class="font-heading text-4xl font-bold text-licorice md:text-5xl">Dashboard Admin</h1>
+          <p class="mt-1.5 text-sm font-medium text-muted">Ringkasan data dekorasi WedSpace.</p>
+        </div>
+        <VintageOrnament variant="oval-sticker" label="catalog master" warna="peach" class="-rotate-3" />
+      </div>
+    </div>
 
-    <p v-if="error" class="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-danger">{{ error }}</p>
+    <p v-if="error" class="rounded-xl border-2 border-licorice bg-strawberry/75 px-4 py-3 text-sm font-semibold text-cherry">
+      <i class="fa-solid fa-circle-exclamation mr-1.5"></i>{{ error }}
+    </p>
 
-    <div v-if="sibuk && !totalDekorasi" class="mt-6 text-muted">Memuat data…</div>
+    <div v-if="sibuk && !totalDekorasi" class="ws-paper-card p-8 text-center text-muted">Memuat data…</div>
 
-    <div v-else class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <StatCard judul="Total Dekorasi" :nilai="totalDekorasi" ikon="fa-box-archive" />
       <StatCard judul="Dekorasi Aktif" :nilai="dekorasiAktif" ikon="fa-circle-check" />
       <StatCard judul="Dekorasi Nonaktif" :nilai="dekorasiNonaktif" ikon="fa-circle-pause" />
     </div>
 
+    <div class="checkerboard-trim rounded-full border border-licorice"></div>
+
     <RouterLink
       to="/admin/dekorasi"
-      class="mt-6 flex items-center justify-between gap-4 rounded-2xl border border-line bg-white p-5 hover:border-primary"
+      class="ws-paper-card ws-paper-card-hover flex items-center justify-between gap-4 bg-paper p-6"
     >
       <span class="flex items-center gap-4">
-        <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-blush text-primary">
+        <span class="flex h-13 w-13 flex-none items-center justify-center rounded-2xl border-2 border-licorice bg-strawberry text-xl text-cherry shadow-[2px_2px_0px_#7F1125]">
           <i class="fa-solid fa-box-archive"></i>
         </span>
         <span>
-          <span class="block font-semibold">Kelola Data Dekorasi</span>
+          <span class="ws-badge-sticker mb-1.5 bg-peach text-licorice">Manajemen Katalog</span>
+          <span class="font-heading block text-2xl font-bold text-licorice">Kelola Data Dekorasi</span>
           <span class="block text-sm text-muted">
             Tambah, ubah, dan hapus data dekorasi beserta harga dan ukurannya.
             <template v-if="totalKategori"> Terdapat {{ totalKategori }} kategori.</template>
           </span>
         </span>
       </span>
-      <i class="fa-solid fa-arrow-right text-muted"></i>
+      <span class="ws-btn-cherry px-4 py-2.5">
+        Buka <i class="fa-solid fa-arrow-right ml-1.5"></i>
+      </span>
     </RouterLink>
   </section>
 
   <!-- Dashboard WO: ringkasan proyek & rancangan -->
-  <section v-else>
-    <h1 class="font-heading text-4xl font-semibold md:text-5xl">Halo, {{ auth.user?.nama || 'perencana' }}</h1>
-    <p class="mt-2 text-base text-muted">Berikut ringkasan workspace-mu.</p>
+  <section v-else class="space-y-6">
+    <!-- Welcome Banner with Grid Paper & Scrapbook Ornaments -->
+    <div class="ws-paper-card bg-grid-paper relative overflow-hidden">
+      <div class="bg-stripes-pink flex flex-wrap items-center justify-between gap-2 border-b-2 border-licorice px-6 py-2.5">
+        <span class="ws-eyebrow">(WEDDING ORGANIZER WORKSPACE)</span>
+        <span class="rounded-full border border-licorice bg-marshmallow px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest text-cherry">
+          Studio Planner
+        </span>
+      </div>
 
-    <p v-if="error" class="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-danger">{{ error }}</p>
+      <div class="flex flex-wrap items-center justify-between gap-6 p-6 md:p-8">
+        <div>
+          <h1 class="font-heading text-4xl font-bold text-licorice md:text-5xl">
+            Halo, {{ auth.user?.nama || 'perencana' }}
+          </h1>
+          <p class="mt-1.5 text-sm font-medium text-muted">Berikut ringkasan workspace-mu.</p>
+        </div>
 
-    <div v-if="sibuk && !ringkasan.total_proyek" class="mt-6 text-muted">Memuat data…</div>
+        <div class="flex items-center gap-3">
+          <VintageOrnament variant="rings" class="hidden h-11 w-14 sm:inline-block" />
+          <VintageOrnament variant="oval-sticker" label="ready to plan!" warna="peach" class="-rotate-3" />
+        </div>
+      </div>
+    </div>
 
-    <div v-else class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <p v-if="error" class="rounded-xl border-2 border-licorice bg-strawberry/75 px-4 py-3 text-sm font-semibold text-cherry">
+      <i class="fa-solid fa-circle-exclamation mr-1.5"></i>{{ error }}
+    </p>
+
+    <div v-if="sibuk && !ringkasan.total_proyek" class="ws-paper-card p-8 text-center text-muted">Memuat data…</div>
+
+    <!-- Ticket-shaped Statistics -->
+    <div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <StatCard judul="Total Proyek" :nilai="ringkasan.total_proyek" ikon="fa-folder-open" />
       <StatCard judul="Rancangan Tersimpan" :nilai="ringkasan.rancangan_tersimpan" ikon="fa-pen-ruler" />
       <StatCard judul="Dekorasi Tersedia" :nilai="ringkasan.dekorasi_tersedia" ikon="fa-wand-magic-sparkles" />
     </div>
 
-    <div class="mt-6 grid gap-4 sm:grid-cols-2">
-      <RouterLink to="/proyek/baru" class="rounded-2xl border border-line bg-white p-5 hover:border-primary">
-        <i class="fa-solid fa-plus text-primary"></i>
-        <h2 class="mt-2 font-semibold">Buat Proyek Baru</h2>
-        <p class="text-sm text-muted">Mulai rancangan venue pernikahan berikutnya.</p>
+    <!-- Decorative Striped Divider -->
+    <div class="bg-stripes-pink h-3.5 rounded-full border-2 border-licorice"></div>
+
+    <!-- Scrapbook Quick Action Cards -->
+    <div class="grid gap-5 sm:grid-cols-2">
+      <RouterLink
+        to="/proyek/baru"
+        class="ws-paper-card ws-paper-card-hover group relative overflow-hidden bg-paper p-6"
+      >
+        <div class="flex items-start justify-between">
+          <span class="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-licorice bg-strawberry text-lg text-cherry shadow-[2px_2px_0px_#7F1125]">
+            <i class="fa-solid fa-plus"></i>
+          </span>
+          <span class="ws-badge-sticker bg-peach text-licorice">Langkah 01</span>
+        </div>
+        <h2 class="font-heading mt-4 text-3xl font-bold text-licorice group-hover:text-cherry">Buat Proyek Baru</h2>
+        <p class="mt-1 text-sm text-muted">Mulai rancangan venue pernikahan berikutnya.</p>
       </RouterLink>
-      <RouterLink to="/katalog" class="rounded-2xl border border-line bg-white p-5 hover:border-primary">
-        <i class="fa-solid fa-images text-primary"></i>
-        <h2 class="mt-2 font-semibold">Jelajahi Katalog</h2>
-        <p class="text-sm text-muted">Lihat dekorasi yang tersedia beserta harganya.</p>
+
+      <RouterLink
+        to="/katalog"
+        class="ws-paper-card ws-paper-card-hover group relative overflow-hidden bg-paper p-6"
+      >
+        <div class="flex items-start justify-between">
+          <span class="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-licorice bg-violet text-lg text-licorice shadow-[2px_2px_0px_#7F1125]">
+            <i class="fa-solid fa-images"></i>
+          </span>
+          <span class="ws-badge-sticker bg-strawberry text-licorice">Koleksi Item</span>
+        </div>
+        <h2 class="font-heading mt-4 text-3xl font-bold text-licorice group-hover:text-cherry">Jelajahi Katalog</h2>
+        <p class="mt-1 text-sm text-muted">Lihat dekorasi yang tersedia beserta harganya.</p>
       </RouterLink>
     </div>
 
-    <!-- Status paket langganan WO -->
+    <!-- Status paket langganan WO (Ticket Banner) -->
     <RouterLink
       to="/langganan"
       v-if="sub.ringkasan"
-      class="mt-4 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-line bg-white p-5 hover:border-primary"
+      class="ws-ticket flex flex-wrap items-center justify-between gap-4 bg-violet/45 p-5 transition-transform hover:-translate-y-0.5"
     >
       <span class="flex items-center gap-4">
-        <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-blush text-primary">
+        <span class="flex h-12 w-12 flex-none items-center justify-center rounded-2xl border-2 border-licorice bg-marshmallow text-lg text-cherry shadow-[2px_2px_0px_#7F1125]">
           <i class="fa-solid fa-crown"></i>
         </span>
         <span>
-          <span class="block font-semibold">Paket {{ sub.namaPaket }}</span>
-          <span class="block text-sm text-muted">{{ infoPaket }}</span>
+          <span class="ws-badge-sticker bg-strawberry text-licorice">Status Langganan</span>
+          <span class="font-heading mt-1 block text-2xl font-bold text-licorice">Paket {{ sub.namaPaket }}</span>
+          <span class="block text-xs font-medium text-muted">{{ infoPaket }}</span>
         </span>
       </span>
-      <span class="text-sm font-semibold text-primary">
+      <span class="ws-btn-cherry px-4 py-2.5">
         {{ sub.adalahPremium ? 'Lihat detail' : 'Upgrade ke Premium' }}
-        <i class="fa-solid fa-arrow-right ml-1"></i>
+        <i class="fa-solid fa-arrow-right ml-1.5"></i>
       </span>
     </RouterLink>
   </section>

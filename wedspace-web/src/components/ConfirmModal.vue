@@ -11,20 +11,27 @@ defineEmits(['batal', 'konfirmasi'])
 
 <template>
   <Teleport to="body">
-    <div v-if="tampil" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4" @click.self="$emit('batal')">
-      <div class="w-full max-w-sm rounded-2xl border border-line bg-white p-6 shadow-xl">
-        <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-50">
-          <i class="fa-solid fa-triangle-exclamation text-danger"></i>
-        </div>
-        <h2 class="font-heading mt-4 text-center text-2xl font-semibold">{{ judul }}</h2>
-        <p v-if="pesan" class="mt-1.5 text-center text-sm text-muted">{{ pesan }}</p>
-        <div class="mt-6 flex gap-2">
-          <button class="flex-1 rounded-xl border border-line py-2.5 font-semibold hover:bg-canvas" @click="$emit('batal')">
-            Batal
-          </button>
-          <button class="flex-1 rounded-xl bg-danger py-2.5 font-semibold text-white hover:opacity-90" @click="$emit('konfirmasi')">
-            {{ labelKonfirmasi }}
-          </button>
+    <div
+      v-if="tampil"
+      class="fixed inset-0 z-[60] flex items-center justify-center bg-licorice/55 p-4 backdrop-blur-[2px]"
+      @click.self="$emit('batal')"
+    >
+      <div class="ws-paper-card w-full max-w-sm overflow-hidden bg-marshmallow">
+        <div class="checkerboard-trim border-b-2 border-licorice"></div>
+        <div class="p-6 text-center">
+          <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full border-2 border-licorice bg-strawberry shadow-[2px_2px_0px_#7F1125]">
+            <i class="fa-solid fa-triangle-exclamation text-cherry"></i>
+          </div>
+          <h2 class="font-heading mt-4 text-3xl font-bold text-licorice">{{ judul }}</h2>
+          <p v-if="pesan" class="mt-2 text-sm leading-relaxed text-muted">{{ pesan }}</p>
+          <div class="mt-6 flex gap-2.5">
+            <button class="ws-btn-paper flex-1 py-2.5" @click="$emit('batal')">
+              Batal
+            </button>
+            <button class="ws-btn-cherry flex-1 py-2.5" @click="$emit('konfirmasi')">
+              {{ labelKonfirmasi }}
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { useAuthStore } from '../stores/auth'
 import { useSubscriptionStore } from '../stores/subscription'
 import ProjectCard from '../components/ProjectCard.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
+import VintageOrnament from '../components/VintageOrnament.vue'
 
 const auth = useAuthStore()
 const sub = useSubscriptionStore()
@@ -75,47 +76,90 @@ onMounted(() => {
 </script>
 
 <template>
-  <section>
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <div>
-        <h1 class="font-heading text-4xl font-semibold">Proyek Saya</h1>
-        <p class="mt-1 text-sm text-muted">Kelola seluruh proyek venue pernikahanmu.</p>
+  <section class="space-y-5">
+    <!-- Editorial Header Card -->
+    <div class="ws-paper-card bg-grid-paper overflow-hidden">
+      <div class="bg-stripes-pink flex items-center justify-between border-b-2 border-licorice px-6 py-2">
+        <span class="ws-eyebrow">ARSIP PERANCANGAN VENUE</span>
+        <span class="text-[11px] font-bold uppercase tracking-wider text-cherry">
+          {{ daftar.length }} Proyek Tersimpan
+        </span>
       </div>
-      <RouterLink v-if="!sub.proyekPenuh" to="/proyek/baru" class="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90">
-        <i class="fa-solid fa-plus mr-2"></i>Proyek Baru
-      </RouterLink>
-      <RouterLink v-else to="/langganan" class="rounded-xl border border-line bg-white px-5 py-2.5 text-sm font-semibold hover:bg-canvas">
-        <i class="fa-solid fa-crown mr-2 text-primary"></i>Upgrade ke Premium
-      </RouterLink>
+
+      <div class="flex flex-wrap items-center justify-between gap-4 p-6">
+        <div>
+          <h1 class="font-heading text-4xl font-bold text-licorice md:text-5xl">Proyek Saya</h1>
+          <p class="mt-1 text-sm text-muted">Kelola seluruh proyek venue pernikahanmu.</p>
+        </div>
+        <RouterLink
+          v-if="!sub.proyekPenuh"
+          to="/proyek/baru"
+          class="ws-btn-cherry px-5 py-3"
+        >
+          <i class="fa-solid fa-plus mr-2"></i>Proyek Baru
+        </RouterLink>
+        <RouterLink
+          v-else
+          to="/langganan"
+          class="ws-btn-violet px-5 py-3"
+        >
+          <i class="fa-solid fa-crown mr-2 text-cherry"></i>Upgrade ke Premium
+        </RouterLink>
+      </div>
     </div>
 
-    <div v-if="sub.ringkasan" class="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-line bg-white px-4 py-3 text-sm">
-      <span :class="['text-muted', sub.proyekPenuh ? '!text-danger' : '']">
-        <i class="fa-solid fa-crown mr-1.5 text-primary"></i>{{ batasInfo }}
+    <div
+      v-if="sub.ringkasan"
+      class="ws-ticket flex flex-wrap items-center justify-between gap-2 bg-paper px-5 py-3.5 text-sm"
+    >
+      <span :class="['font-medium text-licorice', sub.proyekPenuh ? '!font-bold !text-cherry' : '']">
+        <i class="fa-solid fa-crown mr-2 text-cherry"></i>{{ batasInfo }}
       </span>
-      <RouterLink v-if="!sub.adalahAdmin && !sub.adalahPremium" to="/langganan" class="font-semibold text-primary">
-        Lihat paket
+      <RouterLink
+        v-if="!sub.adalahAdmin && !sub.adalahPremium"
+        to="/langganan"
+        class="text-xs font-bold uppercase tracking-wider text-cherry underline"
+      >
+        Lihat paket →
       </RouterLink>
     </div>
 
-    <p v-if="pesan" class="mt-4 rounded-xl bg-green-50 px-4 py-3 text-sm text-green-700">{{ pesan }}</p>
-    <p v-if="error" class="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-danger">{{ error }}</p>
+    <p v-if="pesan" class="rounded-xl border-2 border-licorice bg-apple/45 px-4 py-3 text-sm font-semibold text-licorice">
+      <i class="fa-solid fa-check mr-1.5"></i>{{ pesan }}
+    </p>
+    <p v-if="error" class="rounded-xl border-2 border-licorice bg-strawberry/75 px-4 py-3 text-sm font-semibold text-cherry">
+      <i class="fa-solid fa-circle-exclamation mr-1.5"></i>{{ error }}
+    </p>
 
-    <input
-      v-model="cari" type="search" placeholder="Cari proyek, venue, atau tema…"
-      class="mt-4 w-full rounded-xl border border-line bg-white px-4 py-2.5 outline-none focus:border-primary"
-    />
+    <!-- Search Bar -->
+    <div class="relative">
+      <i class="fa-solid fa-magnifying-glass pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted"></i>
+      <input
+        v-model="cari"
+        type="search"
+        placeholder="Cari proyek, venue, atau tema…"
+        class="ws-input !bg-paper pl-11"
+      />
+    </div>
 
-    <p v-if="sibuk && !daftar.length" class="mt-8 text-center text-muted">Memuat proyek…</p>
+    <p v-if="sibuk && !daftar.length" class="ws-paper-card p-8 text-center text-muted">Memuat proyek…</p>
 
-    <div v-else-if="tampil.length" class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div v-else-if="tampil.length" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       <ProjectCard v-for="p in tampil" :key="p.id" :proyek="p" @hapus="targetHapus = $event" />
     </div>
 
-    <div v-else class="mt-8 rounded-2xl border border-dashed border-line bg-white p-10 text-center">
-      <p class="font-semibold">Belum ada proyek</p>
+    <!-- Empty State with Grid Paper & Wedding Ornaments -->
+    <div
+      v-else
+      class="ws-paper-card bg-grid-paper relative overflow-hidden p-12 text-center"
+    >
+      <VintageOrnament variant="rings" class="mx-auto h-12 w-14" />
+      <p class="font-heading mt-3 text-3xl font-bold text-licorice">Belum ada proyek</p>
       <p class="mt-1 text-sm text-muted">Buat proyek pertamamu untuk mulai merancang venue.</p>
-      <RouterLink to="/proyek/baru" class="mt-4 inline-block rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90">
+      <RouterLink
+        to="/proyek/baru"
+        class="ws-btn-cherry mt-5 inline-flex px-6 py-3"
+      >
         Buat Proyek
       </RouterLink>
     </div>
