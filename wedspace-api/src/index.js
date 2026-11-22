@@ -18,6 +18,8 @@ app.use(express.json());
 
 // File profil pengguna dapat diakses publik
 app.use('/uploads/profil', express.static(path.join(__dirname, '..', 'uploads', 'profil')));
+// File library model 3D platform dapat diakses publik
+app.use('/uploads/library', express.static(path.join(__dirname, '..', 'uploads', 'library')));
 // File gambar dan model dekorasi diperiksa izin aksesnya (privat vs publik)
 app.get('/uploads/:tipe/:file', periksaAksesMedia);
 

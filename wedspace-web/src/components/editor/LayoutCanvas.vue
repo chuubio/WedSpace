@@ -64,6 +64,9 @@ const isRotatingItem = ref(false)
 const rotateTarget = ref(null)
 const rotateCenter = ref({ x: 0, y: 0 }) // px on screen
 
+// Active pointer tracking
+const activePointerId = ref(null)
+
 function updateContainerSize() {
   if (containerRef.value) {
     containerWidth.value = containerRef.value.clientWidth || 800
@@ -124,36 +127,47 @@ function pilihItem(item, e) {
   emit('select-item', item)
 }
 
-// Klik pada ruang kosong canvas (deselect & pan start)
-function onCanvasMouseDown(e) {
+// Klik/Tap pada ruang kosong canvas (deselect & pan start)
+function onCanvasPointerDown(e) {
   if (e.target.closest('.interactive-item')) return
   emit('select-item', null)
 
   // Start panning
   isPanning.value = true
+  activePointerId.value = e.pointerId
   panStart.value = { x: e.clientX - panX.value, y: e.clientY - panY.value }
+
+  try {
+    e.currentTarget?.setPointerCapture?.(e.pointerId)
+  } catch (err) {}
 }
 
-// Drag start on item
-function onItemMouseDown(e, item) {
+// Drag start on item via pointer (mouse, touch, stylus)
+function onItemPointerDown(e, item) {
   e.stopPropagation()
   emit('select-item', item)
 
   isDraggingItem.value = true
   dragItemTarget.value = item
+  activePointerId.value = e.pointerId
 
   const venuePos = eventToVenueCm(e.clientX, e.clientY)
   dragOffset.value = {
     x: venuePos.x - item.posisi_x,
     y: venuePos.y - item.posisi_y,
   }
+
+  try {
+    e.currentTarget?.setPointerCapture?.(e.pointerId)
+  } catch (err) {}
 }
 
-// Start rotating selected item
-function onRotateHandleMouseDown(e, item) {
+// Start rotating selected item via pointer (mouse, touch, stylus)
+function onRotateHandlePointerDown(e, item) {
   e.stopPropagation()
   isRotatingItem.value = true
   rotateTarget.value = item
+  activePointerId.value = e.pointerId
 
   // Hitung titik tengah objek pada layar (dalam pixel)
   if (containerRef.value) {
@@ -171,10 +185,14 @@ function onRotateHandleMouseDown(e, item) {
       y: venueTop + item.posisi_y * pxPerCm.value + itemHeightPx / 2,
     }
   }
+
+  try {
+    e.currentTarget?.setPointerCapture?.(e.pointerId)
+  } catch (err) {}
 }
 
-// Mouse Move global
-function onMouseMove(e) {
+// Pointer Move global (Mouse, Touch, Stylus)
+function onPointerMove(e) {
   // 1. Panning canvas
   if (isPanning.value) {
     panX.value = e.clientX - panStart.value.x
@@ -232,13 +250,29 @@ function onMouseMove(e) {
   }
 }
 
-// Mouse Up global
-function onMouseUp() {
+// Pointer Up & Pointer Cancel global (bersihkan state interaksi)
+function onPointerUp(e) {
+  cleanupPointerInteraction(e)
+}
+
+function onPointerCancel(e) {
+  cleanupPointerInteraction(e)
+}
+
+function cleanupPointerInteraction(e) {
+  if (e?.target && activePointerId.value !== null) {
+    try {
+      if (e.target.hasPointerCapture?.(activePointerId.value)) {
+        e.target.releasePointerCapture(activePointerId.value)
+      }
+    } catch (err) {}
+  }
   isPanning.value = false
   isDraggingItem.value = false
   dragItemTarget.value = null
   isRotatingItem.value = false
   rotateTarget.value = null
+  activePointerId.value = null
 }
 
 // Drag & Drop dari panel dekorasi
@@ -324,15 +358,17 @@ defineExpose({ resetPan })
 onMounted(() => {
   updateContainerSize()
   window.addEventListener('resize', updateContainerSize)
-  window.addEventListener('mousemove', onMouseMove)
-  window.addEventListener('mouseup', onMouseUp)
+  window.addEventListener('pointermove', onPointerMove)
+  window.addEventListener('pointerup', onPointerUp)
+  window.addEventListener('pointercancel', onPointerCancel)
   window.addEventListener('keydown', onKeyDown)
 })
 
 onUnmounted(() => {
   window.removeEventListener('resize', updateContainerSize)
-  window.removeEventListener('mousemove', onMouseMove)
-  window.removeEventListener('mouseup', onMouseUp)
+  window.removeEventListener('pointermove', onPointerMove)
+  window.removeEventListener('pointerup', onPointerUp)
+  window.removeEventListener('pointercancel', onPointerCancel)
   window.removeEventListener('keydown', onKeyDown)
 })
 </script>
@@ -340,8 +376,8 @@ onUnmounted(() => {
 <template>
   <div
     ref="containerRef"
-    class="relative h-full w-full select-none overflow-hidden bg-grid-subtle cursor-default"
-    @mousedown="onCanvasMouseDown"
+    class="relative h-full w-full select-none overflow-hidden bg-grid-subtle cursor-default touch-none"
+    @pointerdown="onCanvasPointerDown"
     @dragover="onDragOver"
     @drop="onDrop"
   >
@@ -446,7 +482,7 @@ onUnmounted(() => {
           <div
             v-for="item in items"
             :key="item.id"
-            class="interactive-item absolute cursor-move select-none"
+            class="interactive-item absolute cursor-move select-none touch-none"
             :class="{ 'z-20': item.id === selectedItemId, 'z-10': item.id !== selectedItemId }"
             :style="{
               left: `${item.posisi_x * pxPerCm}px`,
@@ -456,7 +492,7 @@ onUnmounted(() => {
               transform: `rotate(${item.rotasi || 0}deg)`,
               transformOrigin: 'center center',
             }"
-            @mousedown="onItemMouseDown($event, item)"
+            @pointerdown="onItemPointerDown($event, item)"
             @click="pilihItem(item, $event)"
           >
             <!-- Decoration Visual Card Body -->
@@ -510,9 +546,9 @@ onUnmounted(() => {
 
               <!-- Rotation Handle Knob (Top Center) -->
               <div
-                class="absolute -top-6 left-1/2 -translate-x-1/2 flex flex-col items-center cursor-grab active:cursor-grabbing z-30 group"
+                class="absolute -top-6 left-1/2 -translate-x-1/2 flex flex-col items-center cursor-grab active:cursor-grabbing z-30 group touch-none"
                 title="Tarik untuk memutar dekorasi"
-                @mousedown="onRotateHandleMouseDown($event, item)"
+                @pointerdown="onRotateHandlePointerDown($event, item)"
               >
                 <!-- Knob Circle -->
                 <div class="flex h-5 w-5 items-center justify-center rounded-full border-2 border-licorice bg-cherry text-white shadow-md group-hover:scale-110 transition-transform">

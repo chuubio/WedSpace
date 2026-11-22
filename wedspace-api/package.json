@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node src/tests/test_hybrid_catalog.js && node src/tests/test_media_security.js && node src/tests/test_tahap3_frontend_backend.js && node src/tests/test_tahap4_workspace2d.js",
+    "test": "node src/tests/test_hybrid_catalog.js && node src/tests/test_media_security.js && node src/tests/test_tahap3_frontend_backend.js && node src/tests/test_tahap4_workspace2d.js && node src/tests/test_tahap4a_penyempurnaan.js && node src/tests/test_tahap5_estimasi.js && node src/tests/test_tahap6_visualisasi3d.js",
+    "test:tahap6": "node src/tests/test_tahap6_visualisasi3d.js",
     "dev": "nodemon src/index.js",
     "seed": "node src/seed.js",
     "migrate": "node src/migrations/run-migration.js --up",

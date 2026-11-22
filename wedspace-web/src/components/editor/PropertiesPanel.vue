@@ -41,14 +41,14 @@ function urlGambar(d) {
 function onUbahX(e) {
   let val = Number(e.target.value)
   if (isNaN(val)) val = 0
-  val = Math.max(0, Math.min(val, props.panjangVenue * 100))
+  val = Math.max(0, Math.min(val, maxPosisiX.value))
   emit('update-prop', { key: 'posisi_x', value: Math.round(val) })
 }
 
 function onUbahY(e) {
   let val = Number(e.target.value)
   if (isNaN(val)) val = 0
-  val = Math.max(0, Math.min(val, props.lebarVenue * 100))
+  val = Math.max(0, Math.min(val, maxPosisiY.value))
   emit('update-prop', { key: 'posisi_y', value: Math.round(val) })
 }
 
@@ -160,7 +160,7 @@ function onInputJumlah(e) {
               id="input-posisi-x"
               type="number"
               min="0"
-              :max="panjangVenue * 100"
+              :max="maxPosisiX"
               step="10"
               :value="selectedItem.posisi_x"
               class="ws-input pr-10 text-xs font-bold"
@@ -181,7 +181,7 @@ function onInputJumlah(e) {
               id="input-posisi-y"
               type="number"
               min="0"
-              :max="lebarVenue * 100"
+              :max="maxPosisiY"
               step="10"
               :value="selectedItem.posisi_y"
               class="ws-input pr-10 text-xs font-bold"

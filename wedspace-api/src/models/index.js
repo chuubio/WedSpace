@@ -44,13 +44,39 @@ const Decoration = sequelize.define('Decoration', {
     allowNull: false,
     defaultValue: 'private',
   },
+  model_3d_source: {
+    type: DataTypes.ENUM('library', 'upload', 'placeholder'),
+    allowNull: false,
+    defaultValue: 'placeholder',
+  },
+  library_model_id: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: { model: 'model_3d_library', key: 'id' },
+  },
 }, { tableName: 'decorations', underscored: true });
+
+const Model3DLibrary = sequelize.define('Model3DLibrary', {
+  nama_model: { type: DataTypes.STRING, allowNull: false },
+  kategori: { type: DataTypes.STRING, allowNull: false },
+  file_path: { type: DataTypes.STRING, allowNull: false },
+  thumbnail_path: { type: DataTypes.STRING, allowNull: true },
+  panjang: { type: DataTypes.FLOAT, allowNull: false, defaultValue: 100 },
+  lebar: { type: DataTypes.FLOAT, allowNull: false, defaultValue: 100 },
+  tinggi: { type: DataTypes.FLOAT, allowNull: false, defaultValue: 100 },
+  sumber: { type: DataTypes.STRING, defaultValue: 'WedSpace Master 3D Studio' },
+  license_name: { type: DataTypes.STRING, defaultValue: 'CC-BY-4.0' },
+  license_url: { type: DataTypes.STRING, defaultValue: 'https://creativecommons.org/licenses/by/4.0/' },
+  attribution_text: { type: DataTypes.TEXT, defaultValue: 'WedSpace Platform Library Asset' },
+  is_active: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
+}, { tableName: 'model_3d_library', underscored: true });
 
 const DesignItem = sequelize.define('DesignItem', {
   posisi_x: { type: DataTypes.FLOAT, allowNull: false, defaultValue: 0 }, // cm
   posisi_y: { type: DataTypes.FLOAT, allowNull: false, defaultValue: 0 }, // cm
   rotasi: { type: DataTypes.FLOAT, allowNull: false, defaultValue: 0 },   // derajat
   jumlah: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 },
+  harga_satuan_snapshot: { type: DataTypes.INTEGER, allowNull: true },    // rupiah (snapshot saat penambahan)
 }, { tableName: 'design_items', underscored: true });
 
 const Subscription = sequelize.define('Subscription', {
@@ -91,6 +117,9 @@ DesignItem.belongsTo(Design, { foreignKey: 'design_id' });
 Decoration.hasMany(DesignItem, { foreignKey: { name: 'decoration_id', allowNull: false }, onDelete: 'RESTRICT' });
 DesignItem.belongsTo(Decoration, { foreignKey: 'decoration_id' });
 
+Model3DLibrary.hasMany(Decoration, { foreignKey: 'library_model_id', onDelete: 'SET NULL' });
+Decoration.belongsTo(Model3DLibrary, { foreignKey: 'library_model_id' });
+
 module.exports = {
   sequelize,
   User,
@@ -98,6 +127,7 @@ module.exports = {
   Design,
   Decoration,
   DesignItem,
+  Model3DLibrary,
   Subscription,
   RecommendationUsage,
 };

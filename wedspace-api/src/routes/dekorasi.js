@@ -4,7 +4,7 @@ const path = require('node:path');
 const fs = require('node:fs');
 const { z } = require('zod');
 const { Op } = require('sequelize');
-const { Decoration, DesignItem, User } = require('../models');
+const { Decoration, DesignItem, User, Model3DLibrary } = require('../models');
 const { authWajib } = require('../middleware/auth');
 const {
   adalahPemilik,
@@ -73,6 +73,8 @@ const skemaDekorasi = z.object({
   tinggi: z.coerce.number().positive('Tinggi harus lebih dari 0'),
   deskripsi: z.string().optional().default(''),
   is_active: z.coerce.boolean().optional().default(true),
+  model_3d_source: z.enum(['library', 'upload', 'placeholder']).optional(),
+  library_model_id: z.coerce.number().int().positive().nullable().optional(),
 });
 
 const skemaVisibilitas = z.object({
@@ -122,7 +124,10 @@ router.get('/', authWajib, async (req, res) => {
 
   const data = await Decoration.findAll({
     where: { [Op.and]: kondisiAnd },
-    include: [{ model: User, attributes: ['id', 'nama', 'username_email'] }],
+    include: [
+      { model: User, attributes: ['id', 'nama', 'username_email'] },
+      { model: Model3DLibrary },
+    ],
     order: [['id', 'ASC']],
   });
 
@@ -132,13 +137,36 @@ router.get('/', authWajib, async (req, res) => {
 });
 
 /**
+ * GET /api/dekorasi/library-3d
+ * Mengambil daftar aset 3D bawaan platform (Platform 3D Library).
+ * Dapat diakses oleh pengguna yang sudah terotentikasi.
+ */
+router.get('/library-3d', authWajib, async (req, res) => {
+  try {
+    const list = await Model3DLibrary.findAll({
+      where: { is_active: true },
+      order: [['kategori', 'ASC'], ['nama_model', 'ASC']],
+    });
+    return res.json({
+      pesan: 'Daftar model 3D library berhasil diambil.',
+      data: list,
+    });
+  } catch (error) {
+    return res.status(500).json({ pesan: 'Gagal memuat model 3D library.', detail: error.message });
+  }
+});
+
+/**
  * GET /api/dekorasi/:id
  * Melihat detail dekorasi.
  * Ditolak jika dekorasi private milik pengguna lain.
  */
 router.get('/:id', authWajib, async (req, res) => {
   const item = await Decoration.findByPk(req.params.id, {
-    include: [{ model: User, attributes: ['id', 'nama', 'username_email'] }],
+    include: [
+      { model: User, attributes: ['id', 'nama', 'username_email'] },
+      { model: Model3DLibrary },
+    ],
   });
 
   if (!item) {
@@ -184,18 +212,33 @@ router.post('/', authWajib, hanyaWO, (req, res, next) => {
   const fileGambar = req.files?.gambar?.[0];
   const fileModel = req.files?.model_3d?.[0];
 
+  // Tentukan model_3d_source
+  let modelSource = parsed.data.model_3d_source;
+  if (fileModel) {
+    modelSource = 'upload';
+  } else if (parsed.data.library_model_id) {
+    modelSource = 'library';
+  } else if (!modelSource) {
+    modelSource = 'placeholder';
+  }
+
   // Identitas pemilik dan visibilitas awal ditentukan backend secara ketat
   const payload = {
     ...parsed.data,
     gambar: fileGambar ? `/uploads/gambar/${fileGambar.filename}` : null,
     model_3d: fileModel ? `/uploads/model/${fileModel.filename}` : null,
+    model_3d_source: modelSource,
+    library_model_id: parsed.data.library_model_id || null,
     created_by_user_id: req.user.id,
     visibility: 'private',
   };
 
   const dibuat = await Decoration.create(payload);
   const baru = await Decoration.findByPk(dibuat.id, {
-    include: [{ model: User, attributes: ['id', 'nama', 'username_email'] }],
+    include: [
+      { model: User, attributes: ['id', 'nama', 'username_email'] },
+      { model: Model3DLibrary },
+    ],
   });
 
   return res.status(201).json({
@@ -251,6 +294,9 @@ router.put('/:id', authWajib, hanyaWO, (req, res, next) => {
   }
   if (fileModel) {
     dataUpdate.model_3d = `/uploads/model/${fileModel.filename}`;
+    dataUpdate.model_3d_source = 'upload';
+  } else if (parsed.data.library_model_id) {
+    dataUpdate.model_3d_source = 'library';
   }
 
   // Jika payload mengirimkan perubahan visibility, validasi nilainya
@@ -264,7 +310,10 @@ router.put('/:id', authWajib, hanyaWO, (req, res, next) => {
 
   await item.update(dataUpdate);
   const segar = await Decoration.findByPk(item.id, {
-    include: [{ model: User, attributes: ['id', 'nama', 'username_email'] }],
+    include: [
+      { model: User, attributes: ['id', 'nama', 'username_email'] },
+      { model: Model3DLibrary },
+    ],
   });
 
   return res.json({

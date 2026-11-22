@@ -169,7 +169,12 @@ function buatPdfRancangan(rancangan) {
   ];
 
   const total = items.reduce(
-    (s, i) => s + Number(i.Decoration?.harga || 0) * Number(i.jumlah || 1),
+    (s, i) => {
+      const harga = i.harga_satuan_snapshot !== null && i.harga_satuan_snapshot !== undefined
+        ? Number(i.harga_satuan_snapshot)
+        : Number(i.Decoration?.harga || 0);
+      return s + harga * Number(i.jumlah || 1);
+    },
     0,
   );
 
@@ -177,7 +182,9 @@ function buatPdfRancangan(rancangan) {
     baris.push({ teks: 'Belum ada dekorasi pada rancangan ini.', ukuran: 10, jarak: 20 });
   } else {
     for (const item of items) {
-      const harga = Number(item.Decoration?.harga || 0);
+      const harga = item.harga_satuan_snapshot !== null && item.harga_satuan_snapshot !== undefined
+        ? Number(item.harga_satuan_snapshot)
+        : Number(item.Decoration?.harga || 0);
       const jumlah = Number(item.jumlah || 1);
       baris.push({
         jarak: 16,
