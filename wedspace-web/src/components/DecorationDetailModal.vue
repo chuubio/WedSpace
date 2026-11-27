@@ -90,39 +90,39 @@ const adalahAsetPlatform = computed(() => {
                   v-if="adalahAsetPlatform"
                   class="inline-flex items-center gap-1 rounded-full border border-licorice/40 bg-paper px-2.5 py-0.5 text-xs font-bold text-cherry"
                 >
-                  <i class="fa-solid fa-certificate text-[10px]"></i>WedSpace Platform
+                  <i class="fa-solid fa-certificate text-[0.6875rem]"></i>WedSpace Platform
                 </span>
                 <span
                   v-else
                   class="inline-flex items-center gap-1 rounded-full border border-licorice/40 bg-paper px-2.5 py-0.5 text-xs font-bold text-licorice"
                 >
-                  <i class="fa-solid fa-user-pen text-cherry text-[10px]"></i>{{ dekorasi.kontributor || 'Wedding Organizer' }}
+                  <i class="fa-solid fa-user-pen text-cherry text-[0.6875rem]"></i>{{ dekorasi.kontributor || 'Wedding Organizer' }}
                 </span>
               </div>
             </div>
 
             <div class="text-right">
               <span class="ws-price-pill text-sm">{{ rupiah(dekorasi.harga) }}</span>
-              <p class="mt-1 text-[10px] font-semibold uppercase text-muted">Harga Referensi</p>
+              <p class="mt-1 text-[0.6875rem] font-semibold uppercase text-muted">Harga Referensi</p>
             </div>
           </div>
 
           <!-- Dimension & Spec Details -->
           <div class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
             <div class="rounded-xl border border-licorice/40 bg-paper p-2.5 text-center">
-              <span class="block text-[10px] font-bold uppercase tracking-wider text-muted">Dimensi</span>
+              <span class="block text-[0.6875rem] font-bold uppercase tracking-wider text-muted">Dimensi</span>
               <span class="mt-0.5 font-bold text-licorice text-xs">
                 {{ dekorasi.panjang }} × {{ dekorasi.lebar }} × {{ dekorasi.tinggi }} cm
               </span>
             </div>
             <div class="rounded-xl border border-licorice/40 bg-paper p-2.5 text-center">
-              <span class="block text-[10px] font-bold uppercase tracking-wider text-muted">Visibilitas</span>
+              <span class="block text-[0.6875rem] font-bold uppercase tracking-wider text-muted">Visibilitas</span>
               <span class="mt-0.5 font-bold text-xs uppercase" :class="dekorasi.visibility === 'public' ? 'text-cherry' : 'text-licorice'">
                 {{ dekorasi.visibility }}
               </span>
             </div>
             <div class="col-span-2 sm:col-span-1 rounded-xl border border-licorice/40 bg-paper p-2.5 text-center">
-              <span class="block text-[10px] font-bold uppercase tracking-wider text-muted">Aset 3D</span>
+              <span class="block text-[0.6875rem] font-bold uppercase tracking-wider text-muted">Aset 3D</span>
               <span class="mt-0.5 font-bold text-xs" :class="dekorasi.model_3d ? 'text-apple font-bold' : 'text-muted'">
                 {{ dekorasi.model_3d ? 'Tersedia' : 'Standar' }}
               </span>

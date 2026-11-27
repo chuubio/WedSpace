@@ -45,7 +45,7 @@ const medan = 'ws-input'
     <!-- Decorative Spiral Notebook Top Bar -->
     <div class="bg-stripes-pink flex items-center justify-between border-b-2 border-licorice px-6 py-3">
       <span class="ws-eyebrow">Formulir Spesifikasi Venue</span>
-      <span class="rounded-full border border-licorice bg-peach px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-licorice">
+      <span class="rounded-full border border-licorice bg-peach px-2.5 py-0.5 text-[0.6875rem] font-bold uppercase tracking-wider text-licorice">
         Lembar Kerja WO
       </span>
     </div>

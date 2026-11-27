@@ -54,8 +54,8 @@ async function masuk() {
               "Every great celebration begins with a thoughtful blueprint."
             </p>
             <div class="mt-3 flex justify-center gap-1.5">
-              <span class="rounded-full border border-licorice bg-strawberry px-2.5 py-0.5 text-[10px] font-bold uppercase">2D Layout</span>
-              <span class="rounded-full border border-licorice bg-violet px-2.5 py-0.5 text-[10px] font-bold uppercase">3D View</span>
+              <span class="rounded-full border border-licorice bg-strawberry px-2.5 py-0.5 text-[0.6875rem] font-bold uppercase">2D Layout</span>
+              <span class="rounded-full border border-licorice bg-violet px-2.5 py-0.5 text-[0.6875rem] font-bold uppercase">3D View</span>
             </div>
           </div>
         </div>

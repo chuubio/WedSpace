@@ -57,7 +57,7 @@ function konfirmasiLogout() {
     <div class="bg-stripes-pink border-b-2 border-licorice px-4 py-3 pt-20 md:pt-5">
       <div class="flex items-center justify-between gap-2 rounded-xl border border-licorice bg-marshmallow px-3 py-2 shadow-[2px_2px_0px_#7F1125]">
         <div>
-          <p class="text-[9px] font-bold uppercase tracking-[0.16em] text-cherry">
+          <p class="text-[0.625rem] font-bold uppercase tracking-[0.16em] text-cherry">
             {{ auth.adalahAdmin ? 'Curator Desk' : 'Wedding Planner' }}
           </p>
           <p class="font-heading text-base font-bold leading-tight text-licorice">
@@ -119,7 +119,7 @@ function konfirmasiLogout() {
         <p class="font-heading mt-1 text-base font-bold italic text-licorice">
           "Crafted for timeless celebrations"
         </p>
-        <p class="mt-0.5 text-[10px] uppercase tracking-widest text-muted">WedSpace Atelier</p>
+        <p class="mt-0.5 text-[0.6875rem] uppercase tracking-widest text-muted">WedSpace Atelier</p>
       </div>
     </nav>
 
@@ -138,7 +138,7 @@ function konfirmasiLogout() {
         </span>
         <span class="min-w-0 flex-1">
           <span class="block truncate text-xs font-bold uppercase tracking-wider text-licorice">{{ auth.user?.nama || 'Akun' }}</span>
-          <span class="block text-[11px] text-muted">Pengaturan akun</span>
+          <span class="block text-xs text-muted">Pengaturan akun</span>
         </span>
       </RouterLink>
       <button

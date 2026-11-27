@@ -13,7 +13,9 @@ const rekomendasiRoutes = require('./routes/rekomendasi');
 const { periksaAksesMedia } = require('./middleware/mediaAkses');
 
 const app = express();
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({
+  origin: [/^http:\/\/localhost:\d+$/, /^http:\/\/127\.0\.0\.1:\d+$/],
+}));
 app.use(express.json());
 
 // File profil pengguna dapat diakses publik

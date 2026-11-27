@@ -245,14 +245,14 @@ onMounted(muat)
       <div class="ws-ticket bg-violet/30 p-4 text-center">
         <p class="font-heading text-3xl font-bold text-licorice">{{ totalPrivate }}</p>
         <p class="ws-eyebrow mt-1 text-licorice font-bold">
-          <i class="fa-solid fa-lock text-[10px] mr-1"></i>Private
+          <i class="fa-solid fa-lock text-[0.6875rem] mr-1"></i>Private
         </p>
       </div>
 
       <div class="ws-ticket bg-apple/35 p-4 text-center">
         <p class="font-heading text-3xl font-bold text-cherry">{{ totalPublic }}</p>
         <p class="ws-eyebrow mt-1 text-cherry font-bold">
-          <i class="fa-solid fa-globe text-[10px] mr-1"></i>Public
+          <i class="fa-solid fa-globe text-[0.6875rem] mr-1"></i>Public
         </p>
       </div>
 

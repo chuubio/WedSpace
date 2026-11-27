@@ -216,7 +216,7 @@ onUnmounted(() => {
               <p class="text-xs font-bold tracking-wide text-licorice">
                 Inspirasi Venue · Garden &amp; Outdoor Reception
               </p>
-              <span class="rounded-full border border-licorice bg-peach px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-licorice">
+              <span class="rounded-full border border-licorice bg-peach px-2.5 py-0.5 text-[0.6875rem] font-bold uppercase tracking-wider text-licorice">
                 WedSpace Studio
               </span>
             </div>

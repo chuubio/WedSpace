@@ -80,7 +80,7 @@ watch(
             <i class="fa-solid fa-heart"></i>
           </span>
           <span class="font-heading text-[28px] font-bold tracking-tight text-licorice">WedSpace</span>
-          <span class="hidden rounded-full border border-licorice bg-peach px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-licorice shadow-[1.5px_1.5px_0px_#7F1125] sm:inline-block">
+          <span class="hidden rounded-full border border-licorice bg-peach px-2.5 py-0.5 text-[0.6875rem] font-bold uppercase tracking-widest text-licorice shadow-[1.5px_1.5px_0px_#7F1125] sm:inline-block">
             Atelier
           </span>
         </RouterLink>
@@ -104,7 +104,7 @@ watch(
           >
             <div class="flex items-center justify-between border-b-2 border-licorice bg-strawberry px-4 py-2.5">
               <p class="ws-eyebrow">Catatan &amp; Notifikasi</p>
-              <span class="rounded-full border border-licorice bg-peach px-2 py-0.5 text-[10px] font-bold uppercase">Baru</span>
+              <span class="rounded-full border border-licorice bg-peach px-2 py-0.5 text-[0.6875rem] font-bold uppercase">Baru</span>
             </div>
             <div class="bg-grid-subtle px-4 py-3.5">
               <p class="font-heading text-lg font-bold text-licorice">Selamat datang di WedSpace!</p>
@@ -116,7 +116,7 @@ watch(
               </p>
             </div>
             <div class="border-t border-dashed border-licorice/40 bg-marshmallow px-4 py-2.5">
-              <p class="text-[11px] italic text-muted">Belum ada notifikasi baru lainnya.</p>
+              <p class="text-xs italic text-muted">Belum ada notifikasi baru lainnya.</p>
             </div>
           </div>
         </div>
@@ -135,7 +135,7 @@ watch(
           <span class="hidden max-w-32 truncate text-xs font-bold uppercase tracking-wider text-licorice sm:block">
             {{ auth.user?.nama || 'Akun' }}
           </span>
-          <i class="fa-solid fa-chevron-down hidden text-[10px] text-licorice/70 sm:block"></i>
+          <i class="fa-solid fa-chevron-down hidden text-[0.6875rem] text-licorice/70 sm:block"></i>
         </button>
       </div>
     </nav>
@@ -148,7 +148,7 @@ watch(
           <span class="font-heading text-3xl font-bold tracking-tight text-licorice md:text-4xl">
             wedspace
           </span>
-          <span class="rounded-full border border-licorice bg-marshmallow px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-cherry shadow-[1.5px_1.5px_0px_#7F1125]">
+          <span class="rounded-full border border-licorice bg-marshmallow px-2 py-0.5 text-[0.625rem] font-bold uppercase tracking-widest text-cherry shadow-[1.5px_1.5px_0px_#7F1125]">
             studio
           </span>
         </RouterLink>
@@ -176,7 +176,7 @@ watch(
           <li v-for="m in menuPublik" :key="m.ke">
             <RouterLink
               :to="m.ke"
-              class="block rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-[0.14em] text-licorice transition-colors hover:bg-strawberry md:px-1.5 md:py-1 md:text-[11px] md:hover:bg-transparent md:hover:text-cherry"
+              class="block rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-[0.14em] text-licorice transition-colors hover:bg-strawberry md:px-1.5 md:py-1 md:text-xs md:hover:bg-transparent md:hover:text-cherry"
               @click="tutupMenuPublik"
             >
               {{ m.nama }}
@@ -187,7 +187,7 @@ watch(
             <li class="border-t border-dashed border-licorice/30 pt-2 md:border-0 md:pt-0">
               <RouterLink
                 to="/login"
-                class="block rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-[0.14em] text-licorice hover:bg-strawberry md:px-2 md:py-1 md:text-[11px] md:hover:bg-transparent md:hover:text-cherry"
+                class="block rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-[0.14em] text-licorice hover:bg-strawberry md:px-2 md:py-1 md:text-xs md:hover:bg-transparent md:hover:text-cherry"
                 @click="tutupMenuPublik"
               >
                 Login
@@ -207,7 +207,7 @@ watch(
             <li class="border-t border-dashed border-licorice/30 pt-2 md:border-0 md:pt-0">
               <RouterLink
                 to="/dashboard"
-                class="ws-btn-paper w-full px-3.5 py-2 text-center text-[11px] uppercase tracking-wider md:w-auto"
+                class="ws-btn-paper w-full px-3.5 py-2 text-center text-xs uppercase tracking-wider md:w-auto"
                 @click="tutupMenuPublik"
               >
                 Workspace
@@ -216,7 +216,7 @@ watch(
             <li>
               <button
                 type="button"
-                class="block w-full rounded-lg px-3 py-2 text-left text-xs font-bold uppercase tracking-[0.14em] text-licorice hover:bg-strawberry md:w-auto md:px-2 md:py-1 md:text-[11px] md:hover:bg-transparent md:hover:text-cherry"
+                class="block w-full rounded-lg px-3 py-2 text-left text-xs font-bold uppercase tracking-[0.14em] text-licorice hover:bg-strawberry md:w-auto md:px-2 md:py-1 md:text-xs md:hover:bg-transparent md:hover:text-cherry"
                 @click="modalLogout = true; tutupMenuPublik()"
               >
                 Logout

@@ -88,7 +88,7 @@ const adalahAsetPlatform = computed(() => {
 
         <span
           v-if="!dekorasi.is_active"
-          class="rounded-full border border-licorice bg-marshmallow px-2 py-0.5 text-[10px] font-bold uppercase text-cherry shadow-sm"
+          class="rounded-full border border-licorice bg-marshmallow px-2 py-0.5 text-[0.6875rem] font-bold uppercase text-cherry shadow-sm"
         >
           Nonaktif
         </span>
@@ -102,19 +102,19 @@ const adalahAsetPlatform = computed(() => {
         <div v-if="mode === 'komunitas'" class="mb-2 flex items-center justify-between gap-2">
           <span
             v-if="adalahAsetPlatform"
-            class="inline-flex items-center gap-1 rounded-full border border-licorice/40 bg-marshmallow px-2.5 py-0.5 text-[11px] font-bold text-cherry"
+            class="inline-flex items-center gap-1 rounded-full border border-licorice/40 bg-marshmallow px-2.5 py-0.5 text-xs font-bold text-cherry"
           >
-            <i class="fa-solid fa-certificate text-[10px]"></i>WedSpace Platform
+            <i class="fa-solid fa-certificate text-[0.6875rem]"></i>WedSpace Platform
           </span>
           <span
             v-else
-            class="inline-flex items-center gap-1 text-[11px] font-semibold text-licorice/75 truncate"
+            class="inline-flex items-center gap-1 text-xs font-semibold text-licorice/75 truncate"
             :title="dekorasi.kontributor"
           >
             <i class="fa-solid fa-user-pen text-cherry"></i>{{ dekorasi.kontributor || 'Kontributor' }}
           </span>
 
-          <span class="text-[10px] font-semibold uppercase tracking-wider text-muted">
+          <span class="text-[0.6875rem] font-semibold uppercase tracking-wider text-muted">
             Komunitas
           </span>
         </div>
@@ -137,7 +137,7 @@ const adalahAsetPlatform = computed(() => {
       <div class="mt-3.5 border-t border-dashed border-licorice/30 pt-3">
         <!-- Price Pill -->
         <div class="flex items-center justify-between gap-2">
-          <span class="text-[10px] font-bold uppercase tracking-wider text-muted">
+          <span class="text-[0.6875rem] font-bold uppercase tracking-wider text-muted">
             {{ mode === 'komunitas' ? 'Harga Referensi' : 'Harga Estimasi' }}
           </span>
           <span class="ws-price-pill">{{ rupiah(dekorasi.harga) }}</span>

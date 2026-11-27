@@ -39,8 +39,8 @@ function filterFile(req, file, cb) {
   }
   if (file.fieldname === 'model_3d') {
     const ekstensi = path.extname(file.originalname).toLowerCase();
-    if (ekstensi === '.glb' || ekstensi === '.gltf') return cb(null, true);
-    return cb(new Error('File model 3D harus berformat GLB atau glTF.'));
+    if (['.glb', '.gltf', '.obj', '.dae'].includes(ekstensi)) return cb(null, true);
+    return cb(new Error('File model 3D harus berformat GLB, glTF, OBJ, atau DAE (ekspor SketchUp).'));
   }
   return cb(new Error(`Field file tidak dikenal: ${file.fieldname}.`));
 }

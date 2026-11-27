@@ -4,11 +4,15 @@ const sequelize = require('../config/database');
 const migration001 = require('./001_add_owner_and_visibility_to_decorations');
 const migration002 = require('./002_add_harga_satuan_snapshot_to_design_items');
 const migration003 = require('./003_create_model_3d_library_and_update_decorations');
+const migration004 = require('./004_add_workspace_structures_and_notes');
+const migration005 = require('./005_add_workspace_3d_scene_elements');
 
 const migrations = [
   { name: '001_add_owner_and_visibility_to_decorations', module: migration001 },
   { name: '002_add_harga_satuan_snapshot_to_design_items', module: migration002 },
   { name: '003_create_model_3d_library_and_update_decorations', module: migration003 },
+  { name: '004_add_workspace_structures_and_notes', module: migration004 },
+  { name: '005_add_workspace_3d_scene_elements', module: migration005 },
 ];
 
 async function ensureMetaTable() {

@@ -53,7 +53,7 @@ onMounted(muat)
     <div class="ws-paper-card bg-grid-paper overflow-hidden">
       <div class="bg-stripes-pink flex items-center justify-between border-b-2 border-licorice px-6 py-2">
         <span class="ws-eyebrow">PENGAWASAN INVENTARIS DEKORASI</span>
-        <span class="text-[11px] font-bold uppercase tracking-wider text-cherry">Mode Pengawas (Hanya Lihat)</span>
+        <span class="text-xs font-bold uppercase tracking-wider text-cherry">Mode Pengawas (Hanya Lihat)</span>
       </div>
 
       <div class="flex flex-wrap items-center justify-between gap-4 p-6">
@@ -125,12 +125,12 @@ onMounted(muat)
         <div class="flex flex-1 flex-col justify-between p-4">
           <div>
             <div class="flex flex-wrap items-center justify-between gap-1.5">
-              <span class="text-[11px] font-semibold text-cherry">
+              <span class="text-xs font-semibold text-cherry">
                 <i class="fa-solid fa-user-pen mr-1"></i>{{ d.kontributor || 'WedSpace' }}
               </span>
               <span
                 v-if="!d.is_active"
-                class="rounded-full border border-licorice bg-marshmallow px-2.5 py-0.5 text-[10px] font-bold uppercase text-muted"
+                class="rounded-full border border-licorice bg-marshmallow px-2.5 py-0.5 text-[0.6875rem] font-bold uppercase text-muted"
               >
                 Nonaktif
               </span>
@@ -146,12 +146,12 @@ onMounted(muat)
 
           <div class="mt-3 border-t border-dashed border-licorice/30 pt-3">
             <div class="flex items-center justify-between">
-              <span class="text-[10px] font-bold uppercase tracking-wider text-muted">Harga</span>
+              <span class="text-[0.6875rem] font-bold uppercase tracking-wider text-muted">Harga</span>
               <span class="ws-price-pill">{{ rupiah(d.harga) }}</span>
             </div>
-            <div class="mt-2.5 flex items-center justify-between text-[11px] text-muted">
+            <div class="mt-2.5 flex items-center justify-between text-xs text-muted">
               <span>Visibilitas: <strong class="uppercase text-licorice">{{ d.visibility }}</strong></span>
-              <span class="rounded bg-marshmallow px-2 py-0.5 text-[10px] font-semibold text-licorice border border-licorice/30">Read-Only</span>
+              <span class="rounded bg-marshmallow px-2 py-0.5 text-[0.6875rem] font-semibold text-licorice border border-licorice/30">Read-Only</span>
             </div>
           </div>
         </div>

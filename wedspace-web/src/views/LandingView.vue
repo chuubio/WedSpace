@@ -105,7 +105,7 @@ const kartu = 'ws-paper-card ws-paper-card-hover'
             <div class="mx-auto mt-8 grid max-w-5xl border-2 border-licorice bg-marshmallow md:grid-cols-4">
               <!-- Column 0: Dark Licorice Header Block -->
               <div class="flex flex-col items-center justify-center border-b-2 border-licorice bg-licorice p-6 text-marshmallow md:border-b-0 md:border-r-2">
-                <span class="text-[10px] font-bold uppercase tracking-widest text-strawberry">Tantangan</span>
+                <span class="text-[0.6875rem] font-bold uppercase tracking-widest text-strawberry">Tantangan</span>
                 <span class="font-heading mt-2 text-2xl font-bold italic underline decoration-strawberry underline-offset-4">
                   Masalah Umum WO
                 </span>
@@ -121,7 +121,7 @@ const kartu = 'ws-paper-card ws-paper-card-hover'
                   idx < masalah.length - 1 ? 'border-b-2 border-licorice md:border-b-0 md:border-r-2' : '',
                 ]"
               >
-                <div class="flex w-full items-center justify-between text-[10px] font-bold uppercase tracking-wider text-muted">
+                <div class="flex w-full items-center justify-between text-[0.6875rem] font-bold uppercase tracking-wider text-muted">
                   <span>KASUS 0{{ idx + 1 }}</span>
                   <span>(WO)</span>
                 </div>
@@ -134,7 +134,7 @@ const kartu = 'ws-paper-card ws-paper-card-hover'
                   {{ m }}
                 </b>
 
-                <span class="mt-3 text-[11px] font-medium text-muted">Teratasi di WedSpace</span>
+                <span class="mt-3 text-xs font-medium text-muted">Teratasi di WedSpace</span>
               </div>
             </div>
           </div>
@@ -178,7 +178,7 @@ const kartu = 'ws-paper-card ws-paper-card-hover'
           <b class="font-heading mt-4 block text-2xl font-bold text-licorice">{{ f.judul }}</b>
           <p class="mt-1.5 text-sm leading-relaxed text-muted">{{ f.isi }}</p>
 
-          <div class="mt-4 border-t border-dashed border-licorice/30 pt-2.5 text-[10px] font-bold uppercase tracking-widest text-cherry">
+          <div class="mt-4 border-t border-dashed border-licorice/30 pt-2.5 text-[0.6875rem] font-bold uppercase tracking-widest text-cherry">
             WedSpace Standard • Included
           </div>
         </div>
@@ -229,7 +229,7 @@ const kartu = 'ws-paper-card ws-paper-card-hover'
               {{ i + 1 }}
             </div>
             <p class="mt-3 text-sm font-bold text-licorice">{{ l }}</p>
-            <span class="mt-1 text-[10px] uppercase tracking-wider text-muted">Tahap 0{{ i + 1 }}</span>
+            <span class="mt-1 text-[0.6875rem] uppercase tracking-wider text-muted">Tahap 0{{ i + 1 }}</span>
           </li>
         </ol>
 

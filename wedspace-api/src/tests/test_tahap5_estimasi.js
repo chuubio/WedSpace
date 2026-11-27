@@ -341,20 +341,84 @@ async function runTahap5Tests() {
     const ok11 = res11.data?.data?.detail_biaya?.[0]?.harga_satuan === 1000000; // Tetap 1.000.000
     record('Snapshot Harga', 'Harga katalog naik (1jt -> 2.5jt), snapshot rancangan lama TIDAK berubah', ok11, `Snapshot: ${res11.data?.data?.detail_biaya?.[0]?.harga_satuan} (Katalog saat ini: 2500000)`);
 
-    // Skenario 12: Snapshot Harga - Layout dipindahkan dan disimpan ulang (PUT), snapshot lama TETAP dipertahankan!
-    // Geser posisi dekorasiDinamis (kirim id-nya dari frontend)
+    // Skenario 12: Snapshot Harga - Layout dipindahkan, diputar, & jumlah diubah (PUT dengan ID) -> ID stabil & snapshot lama TETAP dipertahankan!
     await request(`/rancangan/${rancanganA.id}`, {
       method: 'PUT',
       headers: authWoA,
       body: JSON.stringify({
         item: [
-          { id: designItemId, decoration_id: dekorasiDinamis.id, posisi_x: 800, posisi_y: 800, jumlah: 1 },
+          {
+            id: designItemId,
+            decoration_id: dekorasiDinamis.id,
+            posisi_x: 800,
+            posisi_y: 800,
+            rotasi: 90,
+            jumlah: 3,
+            harga_satuan_snapshot: 1, // Harus diabaikan oleh backend
+          },
         ],
       }),
     });
     const res12 = await request(`/rancangan/${rancanganA.id}/estimasi`, { headers: authWoA });
-    const ok12 = res12.data?.data?.detail_biaya?.[0]?.harga_satuan === 1000000; // Tetap 1.000.000
-    record('Snapshot Harga', 'Item dipindahkan dan disimpan ulang, snapshot harga tetap bertahan', ok12, `Snapshot: ${res12.data?.data?.detail_biaya?.[0]?.harga_satuan}`);
+    const item12 = res12.data?.data?.detail_biaya?.[0];
+    const ok12 =
+      item12?.design_item_id === designItemId &&
+      item12?.harga_satuan === 1000000 &&
+      item12?.jumlah === 3 &&
+      item12?.subtotal === 3000000;
+    record('Snapshot Harga', 'Posisi/rotasi/jumlah diubah -> ID stabil, snapshot lama bertahan, subtotal terupdate, snapshot client diabaikan', ok12, `ID: ${item12?.design_item_id} (expected ${designItemId}), Snapshot: ${item12?.harga_satuan}, Subtotal: ${item12?.subtotal}`);
+
+    // Skenario 12b: Validasi ID DesignItem tidak valid / milik rancangan lain -> ditolak 400
+    const resIdIlegal = await request(`/rancangan/${rancanganA.id}`, {
+      method: 'PUT',
+      headers: authWoA,
+      body: JSON.stringify({
+        item: [
+          { id: 99999999, decoration_id: dekorasiDinamis.id, posisi_x: 100, posisi_y: 100, jumlah: 1 },
+        ],
+      }),
+    });
+    const ok12b = resIdIlegal.status === 400;
+    record('Validasi ID', 'DesignItem ID yang tidak cocok dengan rancangan ditolak (400)', ok12b, `Status: ${resIdIlegal.status}, Pesan: ${resIdIlegal.data?.pesan}`);
+
+    // Skenario 12c: Validasi jumlah tidak valid (0 atau negatif) -> ditolak 400
+    const resJumlahIlegal = await request(`/rancangan/${rancanganA.id}`, {
+      method: 'PUT',
+      headers: authWoA,
+      body: JSON.stringify({
+        item: [
+          { decoration_id: dekorasiMeja.id, posisi_x: 100, posisi_y: 100, jumlah: 0 },
+        ],
+      }),
+    });
+    const ok12c = resJumlahIlegal.status === 400;
+    record('Validasi Input', 'Jumlah item tidak valid (0) ditolak backend (400)', ok12c, `Status: ${resJumlahIlegal.status}, Pesan: ${resJumlahIlegal.data?.pesan}`);
+
+    // Skenario 12d: Validasi harga negatif pada dekorasi -> ditolak 400
+    const resHargaNegatif = await request('/dekorasi', {
+      method: 'POST',
+      headers: authWoA,
+      body: JSON.stringify({
+        nama_dekorasi: 'Dekorasi Harga Negatif Test',
+        kategori: 'Meja',
+        harga: -50000,
+        panjang: 100,
+        lebar: 100,
+        tinggi: 100,
+      }),
+    });
+    const ok12d = resHargaNegatif.status === 400;
+    record('Validasi Input', 'Harga dekorasi negatif ditolak backend (400)', ok12d, `Status: ${resHargaNegatif.status}, Pesan: ${resHargaNegatif.data?.pesan}`);
+
+    // Skenario 12e: Dekorasi dinonaktifkan -> estimasi rancangan lama tetap dapat dihitung
+    await dekorasiDinamis.update({ is_active: false });
+    const resNonaktif = await request(`/rancangan/${rancanganA.id}/estimasi`, { headers: authWoA });
+    const ok12e =
+      resNonaktif.status === 200 &&
+      resNonaktif.data?.data?.detail_biaya?.[0]?.harga_satuan === 1000000 &&
+      resNonaktif.data?.data?.detail_biaya?.[0]?.subtotal === 3000000;
+    record('Snapshot Harga', 'Dekorasi dinonaktifkan -> estimasi rancangan lama tetap dapat dihitung', ok12e, `Status: ${resNonaktif.status}, Subtotal: ${resNonaktif.data?.data?.detail_biaya?.[0]?.subtotal}`);
+    await dekorasiDinamis.update({ is_active: true });
 
     // Skenario 13: Snapshot Harga - Dekorasi dihapus lalu ditambahkan kembali sebagai item baru -> mendapat harga terbaru (2.500.000)
     // Hapus (kosongkan)
@@ -387,15 +451,18 @@ async function runTahap5Tests() {
     const ok15 = res15.status === 401;
     record('Hak Akses', 'Akses estimasi tanpa token autentikasi ditolak (401)', ok15, `Status: ${res15.status}`);
 
-    // Skenario 16: Format Response - Struktur data lengkap untuk kebutuhan UI
+    // Skenario 16: Format Response - Struktur data & ringkasan lengkap untuk kebutuhan UI
     const res16 = await request(`/rancangan/${rancanganA.id}/estimasi`, { headers: authWoA });
     const data16 = res16.data?.data;
     const ok16 = data16?.rancangan?.nama_rancangan &&
       data16?.proyek?.nama_proyek &&
       Array.isArray(data16?.detail_biaya) &&
       typeof data16?.total_estimasi === 'number' &&
+      typeof data16?.ringkasan?.jumlah_jenis_dekorasi === 'number' &&
+      typeof data16?.ringkasan?.total_unit_dekorasi === 'number' &&
+      data16?.ringkasan?.total_estimasi === data16?.total_estimasi &&
       data16?.status_anggaran !== undefined;
-    record('Integrasi API', 'Response endpoint menyertakan struktur data lengkap untuk frontend', ok16, `Rancangan: ${data16?.rancangan?.nama_rancangan}, Total: ${data16?.total_estimasi}`);
+    record('Integrasi API', 'Response endpoint menyertakan struktur data & ringkasan lengkap untuk frontend', ok16, `Rancangan: ${data16?.rancangan?.nama_rancangan}, Jenis: ${data16?.ringkasan?.jumlah_jenis_dekorasi}, Unit: ${data16?.ringkasan?.total_unit_dekorasi}, Total: ${data16?.total_estimasi}`);
 
   } catch (err) {
     console.error('Test execution error:', err);

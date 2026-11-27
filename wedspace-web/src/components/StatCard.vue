@@ -16,7 +16,7 @@ defineProps({
     </div>
     <div class="mt-3 flex items-baseline justify-between">
       <p class="font-heading text-5xl font-bold leading-none text-licorice">{{ nilai }}</p>
-      <span class="rounded-md border border-licorice/30 bg-marshmallow px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-muted">
+      <span class="rounded-md border border-licorice/30 bg-marshmallow px-2 py-0.5 text-[0.625rem] font-bold uppercase tracking-widest text-muted">
         Tercatat
       </span>
     </div>

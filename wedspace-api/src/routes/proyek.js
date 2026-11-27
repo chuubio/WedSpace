@@ -81,8 +81,18 @@ router.get('/:id', authWajib, muatProyek, async (req, res) => {
   return res.json({ data: { ...req.proyek.toJSON(), rancangan: rancangan.map(bersihRancangan) } });
 });
 
+const skemaUpdateProyek = z.object({
+  nama_proyek: z.string().min(1, 'Nama proyek wajib diisi').optional(),
+  nama_venue: z.string().min(1, 'Nama venue wajib diisi').optional(),
+  panjang_venue: z.coerce.number().positive('Panjang venue harus lebih dari 0').optional(),
+  lebar_venue: z.coerce.number().positive('Lebar venue harus lebih dari 0').optional(),
+  jumlah_tamu: z.coerce.number().int('Jumlah tamu harus bilangan bulat').nonnegative('Jumlah tamu tidak boleh negatif').optional(),
+  tema: z.string().optional(),
+  anggaran: z.coerce.number().int('Anggaran harus bilangan bulat').nonnegative('Anggaran tidak boleh negatif').optional(),
+});
+
 router.put('/:id', authWajib, muatProyek, async (req, res) => {
-  const parsed = skemaProyek.partial().safeParse(req.body);
+  const parsed = skemaUpdateProyek.safeParse(req.body);
   if (!parsed.success) {
     return res.status(400).json({ pesan: parsed.error.issues[0].message });
   }

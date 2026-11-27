@@ -171,14 +171,14 @@ onMounted(muat)
       <div class="ws-ticket bg-strawberry/35 p-4 text-center">
         <p class="font-heading text-3xl font-bold text-cherry">{{ totalPlatform }}</p>
         <p class="ws-eyebrow mt-1 text-cherry font-bold">
-          <i class="fa-solid fa-certificate text-[10px] mr-1"></i>Aset WedSpace
+          <i class="fa-solid fa-certificate text-[0.6875rem] mr-1"></i>Aset WedSpace
         </p>
       </div>
 
       <div class="ws-ticket bg-violet/30 p-4 text-center">
         <p class="font-heading text-3xl font-bold text-licorice">{{ totalKomunitas }}</p>
         <p class="ws-eyebrow mt-1 text-licorice font-bold">
-          <i class="fa-solid fa-user-pen text-[10px] mr-1 text-cherry"></i>Dari Komunitas
+          <i class="fa-solid fa-user-pen text-[0.6875rem] mr-1 text-cherry"></i>Dari Komunitas
         </p>
       </div>
     </div>

@@ -21,6 +21,7 @@ const Project = sequelize.define('Project', {
 
 const Design = sequelize.define('Design', {
   nama_rancangan: { type: DataTypes.STRING, allowNull: false },
+  scene_3d_settings: { type: DataTypes.JSON, allowNull: true },
 }, { tableName: 'venue_designs', underscored: true });
 
 const Decoration = sequelize.define('Decoration', {
@@ -77,7 +78,43 @@ const DesignItem = sequelize.define('DesignItem', {
   rotasi: { type: DataTypes.FLOAT, allowNull: false, defaultValue: 0 },   // derajat
   jumlah: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 },
   harga_satuan_snapshot: { type: DataTypes.INTEGER, allowNull: true },    // rupiah (snapshot saat penambahan)
+  transform_3d: { type: DataTypes.JSON, allowNull: true },                // properti tambahan 3D (elevationY, rotX/Z, scale, mirror, groupId)
 }, { tableName: 'design_items', underscored: true });
+
+const Design3DElement = sequelize.define('Design3DElement', {
+  parent_id: { type: DataTypes.INTEGER, allowNull: true, defaultValue: null },
+  element_type: { type: DataTypes.ENUM('wall', 'door', 'window', 'ceiling', 'primitive'), allowNull: false, defaultValue: 'wall' },
+  name: { type: DataTypes.STRING(120), allowNull: false, defaultValue: 'Elemen 3D' },
+  geometry_data: { type: DataTypes.JSON, allowNull: true },
+  position_data: { type: DataTypes.JSON, allowNull: true },
+  rotation_data: { type: DataTypes.JSON, allowNull: true },
+  scale_data: { type: DataTypes.JSON, allowNull: true },
+  material_data: { type: DataTypes.JSON, allowNull: true },
+  is_visible: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
+  is_locked: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+  sort_order: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
+}, { tableName: 'design_3d_elements', underscored: true });
+
+const DesignStructure = sequelize.define('DesignStructure', {
+  tipe: { type: DataTypes.ENUM('wall', 'door', 'window'), allowNull: false, defaultValue: 'wall' },
+  label: { type: DataTypes.STRING(120), allowNull: false, defaultValue: 'Tembok' },
+  posisi_x: { type: DataTypes.FLOAT, allowNull: false, defaultValue: 0 }, // cm
+  posisi_y: { type: DataTypes.FLOAT, allowNull: false, defaultValue: 0 }, // cm
+  panjang: { type: DataTypes.FLOAT, allowNull: false, defaultValue: 300 }, // cm
+  tebal: { type: DataTypes.FLOAT, allowNull: false, defaultValue: 15 },    // cm
+  tinggi: { type: DataTypes.FLOAT, allowNull: false, defaultValue: 300 },  // cm
+  rotasi: { type: DataTypes.FLOAT, allowNull: false, defaultValue: 0 },    // derajat
+  warna: { type: DataTypes.STRING(32), allowNull: false, defaultValue: '#EFE7DD' },
+}, { tableName: 'design_structures', underscored: true });
+
+const DesignNote = sequelize.define('DesignNote', {
+  judul: { type: DataTypes.STRING(150), allowNull: false, defaultValue: 'Catatan WO' },
+  isi: { type: DataTypes.TEXT, allowNull: false },
+  warna: { type: DataTypes.STRING(32), allowNull: false, defaultValue: '#F7E3A8' },
+  posisi_x: { type: DataTypes.FLOAT, allowNull: true, defaultValue: null }, // cm (opsional untuk pin di canvas)
+  posisi_y: { type: DataTypes.FLOAT, allowNull: true, defaultValue: null }, // cm
+  selesai: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+}, { tableName: 'design_notes', underscored: true });
 
 const Subscription = sequelize.define('Subscription', {
   plan: { type: DataTypes.ENUM('free', 'premium'), allowNull: false, defaultValue: 'free' },
@@ -114,6 +151,18 @@ Design.belongsTo(Project, { foreignKey: 'project_id' });
 Design.hasMany(DesignItem, { foreignKey: { name: 'design_id', allowNull: false }, onDelete: 'CASCADE' });
 DesignItem.belongsTo(Design, { foreignKey: 'design_id' });
 
+Design.hasMany(DesignStructure, { foreignKey: { name: 'design_id', allowNull: false }, onDelete: 'CASCADE' });
+DesignStructure.belongsTo(Design, { foreignKey: 'design_id' });
+
+Design.hasMany(DesignNote, { foreignKey: { name: 'design_id', allowNull: false }, onDelete: 'CASCADE' });
+DesignNote.belongsTo(Design, { foreignKey: 'design_id' });
+
+Design.hasMany(Design3DElement, { foreignKey: { name: 'design_id', allowNull: false }, onDelete: 'CASCADE' });
+Design3DElement.belongsTo(Design, { foreignKey: 'design_id' });
+
+Design3DElement.hasMany(Design3DElement, { as: 'HostedElements', foreignKey: 'parent_id', onDelete: 'CASCADE' });
+Design3DElement.belongsTo(Design3DElement, { as: 'HostElement', foreignKey: 'parent_id' });
+
 Decoration.hasMany(DesignItem, { foreignKey: { name: 'decoration_id', allowNull: false }, onDelete: 'RESTRICT' });
 DesignItem.belongsTo(Decoration, { foreignKey: 'decoration_id' });
 
@@ -127,6 +176,9 @@ module.exports = {
   Design,
   Decoration,
   DesignItem,
+  Design3DElement,
+  DesignStructure,
+  DesignNote,
   Model3DLibrary,
   Subscription,
   RecommendationUsage,

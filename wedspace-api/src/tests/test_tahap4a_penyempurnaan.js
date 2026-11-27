@@ -133,26 +133,71 @@ async function runTahap4aTests() {
     const ok2 = typeof itemsAwal[0]?.id === 'number' && itemsAwal[0]?.id > 0;
     record('Sinkronisasi ID', 'Item hasil simpan mengembalikan ID asli dari database MySQL', ok2, `ID: ${itemsAwal[0]?.id}, Posisi: (${itemsAwal[0]?.posisi_x}, ${itemsAwal[0]?.posisi_y})`);
 
-    // 3. Transaction Rollback: Simulasi kegagalan dalam transaction
-    // Uji Sequelize transaction rollback dengan mengirim operasi yang memicu error database dalam transaction
-    let rollbackBerhasil = false;
+    // 3. Transaction Rollback (Failure Injection pada endpoint PUT /api/rancangan/:id):
+    // Simulasi kegagalan DesignItem.bulkCreate saat menyimpan via HTTP PUT
+    const originalBulkCreate = DesignItem.bulkCreate;
+    let rollbackViaEndpointBerhasil = false;
+    let statusGagal = null;
     try {
-      await sequelize.transaction(async (t) => {
-        // Hapus item
-        await DesignItem.destroy({ where: { design_id: rancanganA.id }, transaction: t });
-        // Sengaja lempar error sebelum commit
-        throw new Error('SIMULASI_KEGAGALAN_DATABASE');
+      DesignItem.bulkCreate = async () => {
+        throw new Error('SIMULASI_KEGAGALAN_BULK_CREATE');
+      };
+      const resGagal = await request(`/rancangan/${rancanganA.id}`, {
+        method: 'PUT',
+        headers: authWoA,
+        body: JSON.stringify({
+          nama_rancangan: 'Nama Seharusnya Rollback',
+          item: [
+            {
+              decoration_id: dekorasiA.id,
+              posisi_x: 999,
+              posisi_y: 888,
+              rotasi: 45,
+              jumlah: 5,
+            },
+          ],
+        }),
       });
-    } catch (err) {
-      if (err.message === 'SIMULASI_KEGAGALAN_DATABASE') {
-        // Cek apakah item tetap ada karena rollback
-        const cekItem = await DesignItem.findAll({ where: { design_id: rancanganA.id } });
-        rollbackBerhasil = cekItem.length === 1 && cekItem[0].id === itemsAwal[0].id;
-      }
+      statusGagal = resGagal.status;
+    } finally {
+      DesignItem.bulkCreate = originalBulkCreate;
     }
-    record('Database Transaction', 'Kegagalan dalam transaction me-rollback destroy (item lama tetap utuh)', rollbackBerhasil, `Item tersisa setelah rollback: ${rollbackBerhasil ? '1 (Utuh)' : '0 (Hilang)'}`);
+    const cekItemSetelahGagal = await DesignItem.findAll({ where: { design_id: rancanganA.id } });
+    const cekDesignSetelahGagal = await Design.findByPk(rancanganA.id);
+    rollbackViaEndpointBerhasil =
+      statusGagal === 500 &&
+      cekItemSetelahGagal.length === 1 &&
+      cekItemSetelahGagal[0].id === itemsAwal[0].id &&
+      cekItemSetelahGagal[0].posisi_x === 500 &&
+      cekDesignSetelahGagal.nama_rancangan === 'Rancangan 1 Updated';
+    record(
+      'Database Transaction',
+      'Kegagalan bulkCreate pada PUT me-rollback destroy & update nama (data lama utuh)',
+      rollbackViaEndpointBerhasil,
+      `HTTP: ${statusGagal}, Item utuh: ${cekItemSetelahGagal.length} (ID ${cekItemSetelahGagal[0]?.id}), Nama: "${cekDesignSetelahGagal?.nama_rancangan}"`
+    );
 
-    // 4. Kasus khusus: Simpan rancangan kosong (item: [])
+    // 4. Kasus khusus: PUT tanpa field `item` (hanya ubah nama) tidak menghapus item lama
+    const resTanpaItem = await request(`/rancangan/${rancanganA.id}`, {
+      method: 'PUT',
+      headers: authWoA,
+      body: JSON.stringify({
+        nama_rancangan: 'Rancangan 1 Rename Saja',
+      }),
+    });
+    const okTanpaItem =
+      resTanpaItem.status === 200 &&
+      resTanpaItem.data?.data?.nama_rancangan === 'Rancangan 1 Rename Saja' &&
+      (resTanpaItem.data?.data?.DesignItems || []).length === 1 &&
+      resTanpaItem.data?.data?.DesignItems[0].id === itemsAwal[0].id;
+    record(
+      'Database Transaction',
+      'PUT tanpa field `item` mempertahankan item lama dan hanya memperbarui nama',
+      okTanpaItem,
+      `Items count: ${resTanpaItem.data?.data?.DesignItems?.length}, Nama: "${resTanpaItem.data?.data?.nama_rancangan}"`
+    );
+
+    // 5. Kasus khusus: Simpan rancangan kosong (item: [])
     const resKosong = await request(`/rancangan/${rancanganA.id}`, {
       method: 'PUT',
       headers: authWoA,
@@ -163,15 +208,22 @@ async function runTahap4aTests() {
     const ok4 = resKosong.status === 200 && (resKosong.data?.data?.DesignItems || []).length === 0;
     record('Database Transaction', 'Menyimpan rancangan kosong (item: []) berhasil committed', ok4, `Items count: ${resKosong.data?.data?.DesignItems?.length}`);
 
-    // 5. Error State 404: Buka rancangan yang tidak ada
+    // 6. Error State 404: Buka rancangan yang tidak ada
     const res404 = await request('/rancangan/9999999', { headers: authWoA });
     const ok5 = res404.status === 404 && res404.data?.pesan?.includes('tidak ditemukan');
     record('Error State', 'Membuka rancangan yang tidak ada menghasilkan 404 (bukan venue tidak valid)', ok5, `Status: ${res404.status}, Pesan: ${res404.data?.pesan}`);
 
-    // 6. Error State 403: Buka rancangan milik WO lain
+    // 7. Error State 403: Buka rancangan milik WO lain
     const res403 = await request(`/rancangan/${rancanganA.id}`, { headers: authWoB });
     const ok6 = res403.status === 403 && res403.data?.pesan?.includes('tidak punya akses');
     record('Error State', 'Membuka rancangan pengguna lain menghasilkan 403', ok6, `Status: ${res403.status}, Pesan: ${res403.data?.pesan}`);
+
+    // 8. Error State 401: Token tidak valid / kedaluwarsa
+    const res401 = await request(`/rancangan/${rancanganA.id}`, {
+      headers: { Authorization: 'Bearer token_tidak_valid_expired' },
+    });
+    const ok401 = res401.status === 401;
+    record('Error State', 'Token tidak valid atau kedaluwarsa menghasilkan 401', ok401, `Status: ${res401.status}, Pesan: ${res401.data?.pesan}`);
 
     // 7. Kembalikan item awal rancangan agar tetap terisi
     await request(`/rancangan/${rancanganA.id}`, {

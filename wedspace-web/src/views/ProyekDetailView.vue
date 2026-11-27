@@ -247,7 +247,7 @@ onMounted(() => {
                   3D
                 </RouterLink>
               </div>
-              <p v-if="!sub.bisaEksporPdf" class="mt-3 border-t border-dashed border-licorice/30 pt-2.5 text-[11px] text-muted">
+              <p v-if="!sub.bisaEksporPdf" class="mt-3 border-t border-dashed border-licorice/30 pt-2.5 text-xs text-muted">
                 Ekspor PDF hanya tersedia pada paket Premium.
                 <RouterLink to="/langganan" class="font-bold text-cherry underline">Upgrade ke Premium</RouterLink>
               </p>

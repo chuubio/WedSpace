@@ -116,8 +116,10 @@ function onPilihModel(e) {
   const file = e.target.files?.[0]
   if (!file) return
   const ext = file.name.split('.').pop().toLowerCase()
-  if (ext !== 'glb' && ext !== 'gltf') {
-    errorForm.value = 'File model 3D harus berformat GLB atau glTF.'
+  if (!['glb', 'gltf', 'obj', 'dae'].includes(ext)) {
+    errorForm.value = ext === 'skp'
+      ? 'File .skp perlu diekspor dulu dari SketchUp (File → Export → 3D Model) ke format .dae, .obj, atau .glb.'
+      : 'File model 3D harus berformat GLB, glTF, OBJ, atau DAE (ekspor SketchUp).'
     return
   }
   if (file.size > 50 * 1024 * 1024) {
@@ -298,7 +300,7 @@ async function simpan() {
                   placeholder="Panjang (cm)"
                   class="ws-input text-center text-xs"
                 />
-                <span class="mt-1 block text-center text-[10px] text-muted font-bold">Panjang</span>
+                <span class="mt-1 block text-center text-[0.6875rem] text-muted font-bold">Panjang</span>
               </div>
               <div>
                 <input
@@ -310,7 +312,7 @@ async function simpan() {
                   placeholder="Lebar (cm)"
                   class="ws-input text-center text-xs"
                 />
-                <span class="mt-1 block text-center text-[10px] text-muted font-bold">Lebar</span>
+                <span class="mt-1 block text-center text-[0.6875rem] text-muted font-bold">Lebar</span>
               </div>
               <div>
                 <input
@@ -322,7 +324,7 @@ async function simpan() {
                   placeholder="Tinggi (cm)"
                   class="ws-input text-center text-xs"
                 />
-                <span class="mt-1 block text-center text-[10px] text-muted font-bold">Tinggi</span>
+                <span class="mt-1 block text-center text-[0.6875rem] text-muted font-bold">Tinggi</span>
               </div>
             </div>
           </div>
@@ -346,7 +348,7 @@ async function simpan() {
                   class="text-xs file:mr-2.5 file:rounded-lg file:border file:border-licorice file:bg-paper file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-licorice hover:file:bg-strawberry cursor-pointer"
                   @change="onPilihGambar"
                 />
-                <p class="mt-1 text-[11px] text-muted">Format: PNG, JPG, WebP. Maksimal 50 MB.</p>
+                <p class="mt-1 text-xs text-muted">Format: PNG, JPG, WebP. Maksimal 50 MB.</p>
               </div>
             </div>
           </div>
@@ -361,7 +363,7 @@ async function simpan() {
                 <i class="fa-solid fa-cube text-cherry text-base"></i>
                 <input
                   type="file"
-                  accept=".glb,.gltf"
+                  accept=".glb,.gltf,.obj,.dae,.skp"
                   class="flex-1 text-xs file:mr-2 file:rounded-lg file:border file:border-licorice file:bg-marshmallow file:px-2.5 file:py-1 file:text-xs file:font-bold file:text-licorice cursor-pointer"
                   @change="onPilihModel"
                 />
@@ -369,7 +371,7 @@ async function simpan() {
               <p v-if="namaModel" class="mt-1.5 font-bold text-licorice">
                 <i class="fa-solid fa-circle-check text-apple mr-1"></i>File: {{ namaModel }}
               </p>
-              <p class="mt-1 text-[11px] text-muted">Format: .glb atau .gltf. Maksimal 50 MB.</p>
+              <p class="mt-1 text-xs text-muted">Format: .glb, .gltf, .obj, atau .dae (ekspor SketchUp). Maksimal 50 MB.</p>
             </div>
           </div>
 

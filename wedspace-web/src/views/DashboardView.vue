@@ -119,7 +119,7 @@ onMounted(() => {
     <div class="ws-paper-card bg-grid-paper relative overflow-hidden">
       <div class="bg-stripes-pink flex flex-wrap items-center justify-between gap-2 border-b-2 border-licorice px-6 py-2.5">
         <span class="ws-eyebrow">(WEDDING ORGANIZER WORKSPACE)</span>
-        <span class="rounded-full border border-licorice bg-marshmallow px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest text-cherry">
+        <span class="rounded-full border border-licorice bg-marshmallow px-3 py-0.5 text-[0.6875rem] font-bold uppercase tracking-widest text-cherry">
           Studio Planner
         </span>
       </div>

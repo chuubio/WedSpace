@@ -18,10 +18,10 @@ import VintageOrnament from './VintageOrnament.vue'
             Workspace perancangan venue pernikahan untuk Wedding Organizer. Susun layout 2D, pratinjau 3D, dan hitung estimasi anggaran dengan sentuhan editorial.
           </p>
           <div class="mt-5 flex items-center gap-2">
-            <span class="rounded-full border border-marshmallow/30 bg-cherry px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-marshmallow">
+            <span class="rounded-full border border-marshmallow/30 bg-cherry px-3 py-1 text-[0.6875rem] font-bold uppercase tracking-widest text-marshmallow">
               Est. 2026
             </span>
-            <span class="rounded-full border border-marshmallow/30 bg-violet px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-licorice">
+            <span class="rounded-full border border-marshmallow/30 bg-violet px-3 py-1 text-[0.6875rem] font-bold uppercase tracking-widest text-licorice">
               Balikpapan, ID
             </span>
           </div>

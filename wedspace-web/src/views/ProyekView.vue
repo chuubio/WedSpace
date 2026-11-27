@@ -81,7 +81,7 @@ onMounted(() => {
     <div class="ws-paper-card bg-grid-paper overflow-hidden">
       <div class="bg-stripes-pink flex items-center justify-between border-b-2 border-licorice px-6 py-2">
         <span class="ws-eyebrow">ARSIP PERANCANGAN VENUE</span>
-        <span class="text-[11px] font-bold uppercase tracking-wider text-cherry">
+        <span class="text-xs font-bold uppercase tracking-wider text-cherry">
           {{ daftar.length }} Proyek Tersimpan
         </span>
       </div>

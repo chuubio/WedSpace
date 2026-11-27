@@ -421,6 +421,266 @@ export function createDefaultBox(w, h, d, label = '') {
 }
 
 /**
+ * Generator Tembok Ruangan (Wall) untuk Workspace 3D
+ */
+export function createWall(w, h, d, colorHex = '#EFE7DD') {
+  const group = new THREE.Group()
+  const wallMat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color(colorHex || '#EFE7DD'),
+    roughness: 0.75,
+    metalness: 0.04,
+  })
+  const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallMat)
+  mesh.position.y = h / 2
+  mesh.castShadow = true
+  mesh.receiveShadow = true
+  group.add(mesh)
+
+  // Baseboard / lis bawah elegan
+  const baseH = Math.min(0.14, h * 0.08)
+  const baseMesh = new THREE.Mesh(
+    new THREE.BoxGeometry(w + 0.02, baseH, d + 0.02),
+    materials.woodLeg
+  )
+  baseMesh.position.y = baseH / 2
+  group.add(baseMesh)
+
+  // Lis atas tipis
+  const crownH = Math.min(0.08, h * 0.04)
+  const crownMesh = new THREE.Mesh(
+    new THREE.BoxGeometry(w + 0.02, crownH, d + 0.02),
+    materials.backdropPanel
+  )
+  crownMesh.position.y = h - crownH / 2
+  group.add(crownMesh)
+
+  return group
+}
+
+/**
+ * Generator Pintu (Door) dengan kusen, daun pintu panel, dan gagang emas
+ */
+export function createDoor(w, h, d, colorHex = '#7F1125') {
+  const group = new THREE.Group()
+  const frameThick = Math.min(0.08, w * 0.08)
+  const doorMat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color(colorHex || '#7F1125'),
+    roughness: 0.45,
+    metalness: 0.08,
+  })
+
+  // Kusen kiri, kanan, atas
+  const leftFrame = new THREE.Mesh(new THREE.BoxGeometry(frameThick, h, d + 0.03), materials.woodLeg)
+  leftFrame.position.set(-w / 2 + frameThick / 2, h / 2, 0)
+  leftFrame.castShadow = true
+  group.add(leftFrame)
+
+  const rightFrame = new THREE.Mesh(new THREE.BoxGeometry(frameThick, h, d + 0.03), materials.woodLeg)
+  rightFrame.position.set(w / 2 - frameThick / 2, h / 2, 0)
+  rightFrame.castShadow = true
+  group.add(rightFrame)
+
+  const topFrame = new THREE.Mesh(new THREE.BoxGeometry(w, frameThick, d + 0.03), materials.woodLeg)
+  topFrame.position.set(0, h - frameThick / 2, 0)
+  topFrame.castShadow = true
+  group.add(topFrame)
+
+  // Daun pintu utama
+  const leafW = Math.max(0.2, w - frameThick * 2)
+  const leafH = Math.max(0.4, h - frameThick)
+  const leafD = Math.max(0.04, d * 0.45)
+  const leaf = new THREE.Mesh(new THREE.BoxGeometry(leafW, leafH, leafD), doorMat)
+  leaf.position.set(0, leafH / 2, 0)
+  leaf.castShadow = true
+  leaf.receiveShadow = true
+  group.add(leaf)
+
+  // Gagang pintu emas (depan & belakang)
+  const handleGeo = new THREE.SphereGeometry(0.035, 12, 12)
+  const handleFront = new THREE.Mesh(handleGeo, materials.goldMetal)
+  handleFront.position.set(leafW * 0.36, leafH * 0.48, leafD / 2 + 0.03)
+  group.add(handleFront)
+
+  const handleBack = new THREE.Mesh(handleGeo, materials.goldMetal)
+  handleBack.position.set(leafW * 0.36, leafH * 0.48, -(leafD / 2 + 0.03))
+  group.add(handleBack)
+
+  return group
+}
+
+/**
+ * Generator Jendela (Window) dengan bingkai dan kaca transparan
+ */
+export function createWindow(w, h, d, colorHex = '#D4E4F7') {
+  const group = new THREE.Group()
+  const sillY = 0.85
+  const winH = Math.max(0.5, h)
+  const frameThick = 0.06
+
+  const glassMat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color(colorHex || '#D4E4F7'),
+    transparent: true,
+    opacity: 0.45,
+    roughness: 0.1,
+    metalness: 0.2,
+  })
+  const glass = new THREE.Mesh(new THREE.BoxGeometry(w - frameThick, winH - frameThick, Math.max(0.02, d * 0.2)), glassMat)
+  glass.position.y = sillY + winH / 2
+  group.add(glass)
+
+  const topBar = new THREE.Mesh(new THREE.BoxGeometry(w, frameThick, d), materials.woodLeg)
+  topBar.position.y = sillY + winH
+  group.add(topBar)
+
+  const botBar = new THREE.Mesh(new THREE.BoxGeometry(w + 0.04, frameThick, d + 0.04), materials.woodLeg)
+  botBar.position.y = sillY
+  group.add(botBar)
+
+  const leftBar = new THREE.Mesh(new THREE.BoxGeometry(frameThick, winH, d), materials.woodLeg)
+  leftBar.position.set(-w / 2 + frameThick / 2, sillY + winH / 2, 0)
+  group.add(leftBar)
+
+  const rightBar = new THREE.Mesh(new THREE.BoxGeometry(frameThick, winH, d), materials.woodLeg)
+  rightBar.position.set(w / 2 - frameThick / 2, sillY + winH / 2, 0)
+  group.add(rightBar)
+
+  return group
+}
+
+/**
+ * Generator Pin Catatan 3D (Floating Note Marker)
+ */
+export function createNotePin3D(colorHex = '#F7E3A8') {
+  const group = new THREE.Group()
+  const pinMat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color(colorHex || '#F7E3A8'),
+    roughness: 0.4,
+    emissive: new THREE.Color(colorHex || '#F7E3A8'),
+    emissiveIntensity: 0.18,
+  })
+
+  // Tiang tipis dari lantai
+  const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 1.5, 8), materials.stageTop)
+  stem.position.y = 0.75
+  group.add(stem)
+
+  // Kartu sticky note mengambang di atas
+  const card = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.45, 0.05), pinMat)
+  card.position.y = 1.65
+  card.castShadow = true
+  group.add(card)
+
+  // Pin kepala cherry
+  const knob = new THREE.Mesh(new THREE.SphereGeometry(0.06, 12, 12), materials.stageTop)
+  knob.position.set(0, 1.85, 0.04)
+  group.add(knob)
+
+  return group
+}
+
+/**
+ * Generator Photobooth Wedding
+ */
+export function createPhotobooth(w, h, d) {
+  const group = new THREE.Group()
+  // Backdrop panel
+  const back = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.08), materials.backdropPanel)
+  back.position.set(0, h / 2, -d / 2 + 0.05)
+  back.castShadow = true
+  group.add(back)
+
+  // Frame bingkai emas
+  const topFrame = new THREE.Mesh(new THREE.BoxGeometry(w + 0.06, 0.1, 0.12), materials.goldMetal)
+  topFrame.position.set(0, h, -d / 2 + 0.06)
+  group.add(topFrame)
+
+  // Karpet depan photobooth
+  const rug = new THREE.Mesh(new THREE.BoxGeometry(w * 0.9, 0.02, d * 0.8), materials.stageTop)
+  rug.position.set(0, 0.01, 0.05)
+  group.add(rug)
+
+  // Aksen bunga sudut kiri & kanan atas
+  for (const sx of [-w * 0.35, w * 0.35]) {
+    const flower = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 10), materials.flowerPetals)
+    flower.position.set(sx, h - 0.18, -d / 2 + 0.14)
+    group.add(flower)
+  }
+
+  return group
+}
+
+/**
+ * Generator Meja Prasmanan / Buffet Catering
+ */
+export function createBuffetTable(w, h, d) {
+  const group = createTable(w, h, d)
+  // Tambahkan 3 chafing dish stainless/emas di atas meja
+  const count = Math.max(2, Math.min(4, Math.floor(w / 0.7)))
+  for (let i = 0; i < count; i++) {
+    const x = -w * 0.35 + (i / Math.max(1, count - 1)) * (w * 0.7)
+    const dish = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.14, 0.25), materials.brassTrim)
+    dish.position.set(x, h + 0.07, 0)
+    dish.castShadow = true
+    group.add(dish)
+  }
+  return group
+}
+
+/**
+ * Generator Welcome Sign Easel
+ */
+export function createWelcomeSign(w, h, d) {
+  const group = new THREE.Group()
+  // 2 kaki depan + 1 kaki belakang easel
+  const legGeo = new THREE.CylinderGeometry(0.02, 0.02, h, 8)
+  const leftLeg = new THREE.Mesh(legGeo, materials.woodLeg)
+  leftLeg.position.set(-w * 0.28, h / 2, 0.08)
+  leftLeg.rotation.z = -0.1
+  group.add(leftLeg)
+
+  const rightLeg = new THREE.Mesh(legGeo, materials.woodLeg)
+  rightLeg.position.set(w * 0.28, h / 2, 0.08)
+  rightLeg.rotation.z = 0.1
+  group.add(rightLeg)
+
+  const backLeg = new THREE.Mesh(legGeo, materials.woodLeg)
+  backLeg.position.set(0, h / 2, -0.22)
+  backLeg.rotation.x = 0.22
+  group.add(backLeg)
+
+  // Papan sign
+  const board = new THREE.Mesh(new THREE.BoxGeometry(w * 0.8, h * 0.48, 0.03), materials.backdropPanel)
+  board.position.set(0, h * 0.62, 0.12)
+  board.rotation.x = -0.12
+  board.castShadow = true
+  group.add(board)
+
+  // Hiasan bunga kecil di sudut atas papan
+  const flor = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 10), materials.flowerPetals)
+  flor.position.set(w * 0.3, h * 0.84, 0.15)
+  group.add(flor)
+
+  return group
+}
+
+/**
+ * Generator Karpet / Aisle Runner
+ */
+export function createCarpet(w, h, d) {
+  const group = new THREE.Group()
+  const carpetH = Math.max(0.02, Math.min(0.05, h))
+  const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, carpetH, d), materials.backdropPanel)
+  mesh.position.y = carpetH / 2
+  mesh.receiveShadow = true
+  group.add(mesh)
+
+  const border = new THREE.Mesh(new THREE.BoxGeometry(w + 0.04, carpetH * 0.8, d + 0.04), materials.goldMetal)
+  border.position.y = carpetH * 0.4
+  group.add(border)
+  return group
+}
+
+/**
  * Dispatcher: menghasilkan procedural model 3D berdasarkan kategori dekorasi
  * @param {string} kategori - Kategori item dekorasi
  * @param {number} panjangCm - Panjang fisik (cm)
@@ -432,10 +692,13 @@ export function generateProceduralAsset(kategori = '', panjangCm = 100, lebarCm 
   // Konversi cm ke meter untuk ruang 3D
   const w = Math.max(0.1, Number(panjangCm) / 100)
   const d = Math.max(0.1, Number(lebarCm) / 100)
-  const h = Math.max(0.1, Number(tinggiCm) / 100)
+  const h = Math.max(0.03, Number(tinggiCm) / 100)
 
   const kat = (kategori || '').toLowerCase().trim()
 
+  if (kat.includes('buffet') || kat.includes('prasmanan') || kat.includes('catering')) {
+    return createBuffetTable(w, h, d)
+  }
   if (kat.includes('meja') || kat.includes('table')) {
     return createTable(w, h, d)
   }
@@ -444,6 +707,15 @@ export function generateProceduralAsset(kategori = '', panjangCm = 100, lebarCm 
   }
   if (kat.includes('panggung') || kat.includes('stage')) {
     return createStage(w, h, d)
+  }
+  if (kat.includes('photobooth') || kat.includes('foto')) {
+    return createPhotobooth(w, h, d)
+  }
+  if (kat.includes('welcome') || kat.includes('sign') || kat.includes('papan')) {
+    return createWelcomeSign(w, h, d)
+  }
+  if (kat.includes('karpet') || kat.includes('aisle') || kat.includes('carpet')) {
+    return createCarpet(w, h, d)
   }
   if (kat.includes('pelaminan') || kat.includes('backdrop')) {
     return createPelaminan(w, h, d)
@@ -457,7 +729,7 @@ export function generateProceduralAsset(kategori = '', panjangCm = 100, lebarCm 
   if (kat.includes('sofa')) {
     return createSofa(w, h, d)
   }
-  if (kat.includes('lampu') || kat.includes('lighting') || kat.includes('sorot')) {
+  if (kat.includes('lampu') || kat.includes('lighting') || kat.includes('sorot') || kat.includes('chandelier')) {
     return createLighting(w, h, d)
   }
 
